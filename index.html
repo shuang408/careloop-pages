@@ -1,1153 +1,300 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>荣科健康管理 · 核心业务流程</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      background: #0f1923;
-      font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
-      color: #1a1a1a;
-      min-height: 100vh;
-    }
-
-    /* ── Header ── */
-    .header {
-      background: linear-gradient(135deg, #E8622A, #FF9A5C);
-      padding: 32px 48px 28px;
-      color: #fff;
-    }
-
-    .header h1 {
-      font-size: 26px;
-      font-weight: 700;
-      letter-spacing: 1px;
-    }
-
-    .header p {
-      font-size: 13px;
-      opacity: .85;
-      margin-top: 6px;
-    }
-
-    .header .pills {
-      display: flex;
-      gap: 10px;
-      margin-top: 16px;
-      flex-wrap: wrap;
-    }
-
-    .pill {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(255, 255, 255, .18);
-      border: 1px solid rgba(255, 255, 255, .3);
-      border-radius: 20px;
-      padding: 5px 14px;
-      font-size: 12px;
-    }
-
-    .pill .dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .dot-ai {
-      background: #60CFFF;
-    }
-
-    .dot-human {
-      background: #A8E6A3;
-    }
-
-    .dot-mix {
-      background: #FFD080;
-    }
-
-    .dot-data {
-      background: #D4A0FF;
-    }
-
-    /* ── Wrapper ── */
-    .wrapper {
-      padding: 24px 32px 48px;
-      overflow-x: auto;
-    }
-
-    /* ── Phase bar ── */
-    .phase-bar {
-      display: grid;
-      grid-template-columns: 120px repeat(7, 1fr);
-      gap: 6px;
-      margin-bottom: 6px;
-    }
-
-    .phase-label {
-      background: transparent;
-    }
-
-    .phase-cell {
-      background: rgba(255, 255, 255, .06);
-      border-radius: 10px 10px 0 0;
-      padding: 10px 8px;
-      text-align: center;
-    }
-
-    .phase-num {
-      font-size: 10px;
-      color: #FF9A5C;
-      font-weight: 700;
-      margin-bottom: 3px;
-    }
-
-    .phase-name {
-      font-size: 12px;
-      font-weight: 700;
-      color: #fff;
-    }
-
-    .phase-icon {
-      font-size: 20px;
-      margin-bottom: 4px;
-    }
-
-    .phase-loop {
-      background: rgba(96, 207, 255, .12);
-      border: 1px solid rgba(96, 207, 255, .3);
-      border-bottom: none;
-    }
-
-    /* ── Swimlane grid ── */
-    .swimlane {
-      display: grid;
-      grid-template-columns: 120px repeat(7, 1fr);
-      gap: 6px;
-    }
-
-    .actor-label {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 6px;
-      padding: 12px 8px;
-      border-radius: 10px;
-      text-align: center;
-    }
-
-    .actor-emoji {
-      font-size: 22px;
-    }
-
-    .actor-name {
-      font-size: 11px;
-      font-weight: 700;
-      color: #fff;
-    }
-
-    .actor-sub {
-      font-size: 9px;
-      opacity: .6;
-      color: #fff;
-    }
-
-    .al-patient {
-      background: linear-gradient(180deg, #E8622A, #c74e1e);
-    }
-
-    .al-ai {
-      background: linear-gradient(180deg, #1565C0, #0d47a1);
-    }
-
-    .al-hm {
-      background: linear-gradient(180deg, #1A7A4A, #145e38);
-    }
-
-    .al-doc {
-      background: linear-gradient(180deg, #1E3A5F, #152a46);
-    }
-
-    .al-data {
-      background: linear-gradient(180deg, #6A1B9A, #4a1270);
-    }
-
-    /* ── Step cards ── */
-    .step {
-      border-radius: 10px;
-      padding: 10px 10px;
-      min-height: 88px;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .step.ai {
-      background: #EBF8FF;
-      border: 1.5px solid #60CFFF;
-    }
-
-    .step.human {
-      background: #F0FBF0;
-      border: 1.5px solid #6ACC6A;
-    }
-
-    .step.mix {
-      background: #FFFBEB;
-      border: 1.5px solid #FFC940;
-    }
-
-    .step.data {
-      background: #F5EEFF;
-      border: 1.5px solid #B87FE8;
-    }
-
-    .step.empty {
-      background: rgba(255, 255, 255, .04);
-      border: 1.5px dashed rgba(255, 255, 255, .12);
-      min-height: 88px;
-    }
-
-    .step.loop {
-      background: #EBF8FF;
-      border: 1.5px solid #60CFFF;
-      border-left: 3px solid #60CFFF;
-    }
-
-    .step-badge {
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: .5px;
-      padding: 2px 7px;
-      border-radius: 8px;
-      display: inline-block;
-      width: fit-content;
-      margin-bottom: 2px;
-    }
-
-    .badge-ai {
-      background: #60CFFF;
-      color: #003366;
-    }
-
-    .badge-human {
-      background: #6ACC6A;
-      color: #003300;
-    }
-
-    .badge-mix {
-      background: #FFC940;
-      color: #4a2e00;
-    }
-
-    .badge-data {
-      background: #B87FE8;
-      color: #1a0033;
-    }
-
-    .step-title {
-      font-size: 12px;
-      font-weight: 700;
-      color: #1a1a1a;
-      line-height: 1.3;
-    }
-
-    .step-desc {
-      font-size: 10.5px;
-      color: #444;
-      line-height: 1.5;
-    }
-
-    .step-items {
-      margin-top: 2px;
-    }
-
-    .step-item {
-      font-size: 10px;
-      color: #555;
-      line-height: 1.6;
-      padding-left: 8px;
-      position: relative;
-    }
-
-    .step-item::before {
-      content: "·";
-      position: absolute;
-      left: 0;
-      color: #888;
-    }
-
-    /* ── Arrow connector ── */
-    .arrow-row {
-      display: grid;
-      grid-template-columns: 120px repeat(7, 1fr);
-      gap: 6px;
-      height: 22px;
-      align-items: center;
-    }
-
-    .arrow-cell {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .arrow-line {
-      height: 2px;
-      background: linear-gradient(90deg, transparent, #FF9A5C, transparent);
-      width: 80%;
-      border-radius: 1px;
-      position: relative;
-    }
-
-    .arrow-line::after {
-      content: "▶";
-      position: absolute;
-      right: -6px;
-      top: -7px;
-      font-size: 12px;
-      color: #FF9A5C;
-    }
-
-    .arrow-empty {
-      opacity: 0;
-    }
-
-    /* ── Loop callout ── */
-    .loop-banner {
-      grid-column: 5/6;
-      background: rgba(96, 207, 255, .08);
-      border: 1px dashed #60CFFF;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 3px;
-    }
-
-    .loop-text {
-      font-size: 9px;
-      color: #60CFFF;
-      font-weight: 700;
-      letter-spacing: .5px;
-    }
-
-    /* ── Section: AI Loop Detail ── */
-    .section {
-      margin-top: 32px;
-      background: rgba(255, 255, 255, .04);
-      border-radius: 16px;
-      padding: 24px 28px;
-      border: 1px solid rgba(255, 255, 255, .08);
-    }
-
-    .section-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 4px;
-    }
-
-    .section-sub {
-      font-size: 12px;
-      color: rgba(255, 255, 255, .5);
-      margin-bottom: 20px;
-    }
-
-    .loop-diagram {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 0;
-    }
-
-    .loop-node {
-      background: #EBF8FF;
-      border: 2px solid #60CFFF;
-      border-radius: 12px;
-      padding: 12px 14px;
-      text-align: center;
-      min-width: 110px;
-      max-width: 130px;
-    }
-
-    .loop-node.orange {
-      background: #FFF0E4;
-      border-color: #FF9A5C;
-    }
-
-    .loop-node.green {
-      background: #F0FBF0;
-      border-color: #6ACC6A;
-    }
-
-    .loop-node.red {
-      background: #FEF0EE;
-      border-color: #E87060;
-    }
-
-    .loop-node.purple {
-      background: #F5EEFF;
-      border-color: #B87FE8;
-    }
-
-    .loop-node-icon {
-      font-size: 22px;
-      margin-bottom: 5px;
-    }
-
-    .loop-node-name {
-      font-size: 11px;
-      font-weight: 700;
-      color: #1a1a1a;
-    }
-
-    .loop-node-desc {
-      font-size: 10px;
-      color: #555;
-      margin-top: 3px;
-      line-height: 1.4;
-    }
-
-    .loop-arrow {
-      display: flex;
-      align-items: center;
-      padding: 0 6px;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .loop-arrow-line {
-      color: #E8622A;
-      font-size: 16px;
-      font-weight: 700;
-    }
-
-    .loop-arrow-label {
-      font-size: 9px;
-      color: rgba(255, 255, 255, .45);
-      white-space: nowrap;
-    }
-
-    /* ── Escalation ladder ── */
-    .escalation {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-top: 20px;
-    }
-
-    .esc-item {
-      border-radius: 12px;
-      padding: 14px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .esc-item::before {
-      content: attr(data-level);
-      position: absolute;
-      top: 8px;
-      right: 10px;
-      font-size: 22px;
-      font-weight: 900;
-      opacity: .12;
-      color: currentColor;
-    }
-
-    .esc-l1 {
-      background: #EBF8FF;
-      border: 1.5px solid #60CFFF;
-    }
-
-    .esc-l2 {
-      background: #FFFBEB;
-      border: 1.5px solid #FFC940;
-    }
-
-    .esc-l3 {
-      background: #FFF0E4;
-      border: 1.5px solid #FF9A5C;
-    }
-
-    .esc-l4 {
-      background: #FEF0EE;
-      border: 1.5px solid #E87060;
-    }
-
-    .esc-header {
-      font-size: 11px;
-      font-weight: 700;
-      color: #1a1a1a;
-      margin-bottom: 6px;
-    }
-
-    .esc-who {
-      font-size: 10px;
-      color: #555;
-      margin-bottom: 6px;
-    }
-
-    .esc-items .esc-i {
-      font-size: 10px;
-      color: #444;
-      line-height: 1.7;
-      padding-left: 8px;
-      position: relative;
-    }
-
-    .esc-i::before {
-      content: "→";
-      position: absolute;
-      left: 0;
-      color: #888;
-      font-size: 9px;
-    }
-
-    /* ── Value section ── */
-    .value-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      margin-top: 20px;
-    }
-
-    .value-card {
-      border-radius: 12px;
-      padding: 16px;
-    }
-
-    .vc-patient {
-      background: linear-gradient(135deg, #FFF0E4, #FFE0C8);
-      border: 1.5px solid #FF9A5C;
-    }
-
-    .vc-doctor {
-      background: linear-gradient(135deg, #E8F0FE, #D0E2FF);
-      border: 1.5px solid #4A90D9;
-    }
-
-    .vc-hospital {
-      background: linear-gradient(135deg, #E8F5EE, #D0EED8);
-      border: 1.5px solid #5CAB7D;
-    }
-
-    .vc-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #1a1a1a;
-      margin-bottom: 8px;
-    }
-
-    .vc-item {
-      font-size: 11px;
-      color: #333;
-      line-height: 1.8;
-      padding-left: 10px;
-      position: relative;
-    }
-
-    .vc-item::before {
-      content: "✓";
-      position: absolute;
-      left: 0;
-      font-size: 10px;
-      color: #666;
-    }
-
-    /* ── Row gap ── */
-    .row-gap {
-      height: 6px;
-    }
-  </style>
-</head>
-
-<body>
-
-  <!-- ── HEADER ───────────────────────────────────────── -->
-  <div class="header">
-    <h1>荣科健康管理 · 核心业务流程</h1>
-    <p>以食管癌为试点 · AI驱动执行 · 院方利益自驱 · 专病路径IP</p>
-    <div class="pills">
-      <div class="pill"><span class="dot dot-ai"></span>AI自动执行（无需人力）</div>
-      <div class="pill"><span class="dot dot-human"></span>人工处理（医生/健管师）</div>
-      <div class="pill"><span class="dot dot-mix"></span>AI辅助+人工决策</div>
-      <div class="pill"><span class="dot dot-data"></span>数据资产沉淀</div>
+<!-- AI 医疗智能体 · 架构与流程图 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 医疗智能体 · 架构与流程</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --paper:#F6F7F5; --panel:#FFFFFF; --ink:#16302D; --muted:#5C6B68; --line:#DBE0DC;
+    --build:#3A5A8C; --build-bg:#EDF2F9; --build-line:#C6D5EA;
+    --core:#0E6E63;  --core-bg:#E4F1EE;  --core-line:#A6D5CD;
+    --app:#2E7D52;   --app-bg:#EAF4ED;   --app-line:#BFDEC8;
+    --flag:#BE3A2B;  --flag-bg:#FBEAE6;
+    --doc:#9C6712;   --doc-bg:#FAF0D9;
+    --disp:"Space Grotesk",system-ui,sans-serif;
+    --body:"Noto Sans SC","Space Grotesk",system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--body);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    padding:40px 22px 60px;
+  }
+  .wrap{max-width:1060px;margin:0 auto}
+
+  /* ---------- header ---------- */
+  header{margin-bottom:34px;border-bottom:1px solid var(--line);padding-bottom:22px}
+  .eyebrow{
+    font-family:var(--mono);font-size:11px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--core);margin:0 0 14px;font-weight:600;
+  }
+  h1{
+    font-family:var(--body);font-weight:700;font-size:clamp(24px,4vw,38px);
+    margin:0 0 10px;letter-spacing:-.01em;line-height:1.15;
+  }
+  .sub{color:var(--muted);font-size:15px;max-width:62ch;margin:0}
+  .sub b{color:var(--ink);font-weight:500}
+
+  /* ---------- zone shell ---------- */
+  .zone{
+    background:var(--panel);border:1px solid var(--line);border-radius:18px;
+    padding:22px 22px 26px;position:relative;
+    box-shadow:0 1px 0 rgba(22,48,45,.03),0 14px 30px -22px rgba(22,48,45,.25);
+  }
+  .zone-head{display:flex;align-items:baseline;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+  .ztag{
+    font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    padding:5px 11px;border-radius:999px;
+  }
+  .zname{font-weight:700;font-size:17px}
+  .zhint{color:var(--muted);font-size:13px;margin-left:auto}
+  .zone.build .ztag{background:var(--build-bg);color:var(--build)}
+  .zone.app .ztag{background:var(--app-bg);color:var(--app)}
+  .zone.build{border-top:3px solid var(--build)}
+  .zone.app{border-top:3px solid var(--app)}
+
+  /* ---------- node card ---------- */
+  .node{
+    background:#fff;border:1px solid var(--line);border-radius:13px;padding:13px 15px;
+    min-width:0;position:relative;transition:transform .18s ease,box-shadow .18s ease;
+  }
+  .node:hover{transform:translateY(-2px);box-shadow:0 10px 22px -16px rgba(22,48,45,.45)}
+  .node .idx{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--muted)}
+  .node .t{font-weight:500;font-size:14.5px;margin-top:3px;line-height:1.35}
+  .node .d{color:var(--muted);font-size:12px;margin-top:5px;line-height:1.4}
+  .node.accent-build{border-left:3px solid var(--build)}
+  .node.accent-app{border-left:3px solid var(--app)}
+
+  /* ---------- build pipeline (horizontal) ---------- */
+  .pipe{display:flex;align-items:stretch;gap:0;flex-wrap:wrap}
+  .pipe .node{flex:1 1 150px}
+  .chev{
+    flex:0 0 26px;align-self:center;display:flex;align-items:center;justify-content:center;
+    color:var(--build-line);font-size:18px;font-weight:700;
+  }
+  .chev::after{content:"›";font-family:var(--disp);color:var(--build);opacity:.55}
+  /* split group */
+  .split{flex:1 1 168px;display:flex;flex-direction:column;gap:8px;justify-content:center}
+  .chip{
+    font-family:var(--mono);font-size:11.5px;font-weight:500;padding:8px 11px;border-radius:9px;
+    background:var(--build-bg);color:var(--build);border:1px solid var(--build-line);
+  }
+  .chip .k{display:block;font-size:10px;letter-spacing:.06em;opacity:.7;margin-bottom:2px}
+
+  /* ---------- spine connector ---------- */
+  .spine{display:flex;flex-direction:column;align-items:center;gap:0;padding:6px 0}
+  .spine .seg{width:2px;height:16px;background:linear-gradient(var(--core-line),var(--core))}
+  .spine .lab{
+    font-family:var(--mono);font-size:11px;color:var(--core);font-weight:600;
+    background:var(--core-bg);border:1px solid var(--core-line);border-radius:999px;padding:4px 12px;
+  }
+  .spine .arrowhead{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--core)}
+
+  /* ---------- core plate (signature) ---------- */
+  .core{
+    background:
+      radial-gradient(120% 120% at 18% 0%, rgba(14,110,99,.10), transparent 60%),
+      var(--core-bg);
+    border:1px solid var(--core-line);border-radius:18px;padding:22px;position:relative;
+    box-shadow:0 18px 40px -28px rgba(14,110,99,.6);
+  }
+  .core .ztag{background:#fff;color:var(--core);border:1px solid var(--core-line)}
+  .core-grid{display:grid;grid-template-columns:1.1fr 1.3fr;gap:18px;align-items:stretch}
+  .kg{
+    background:#fff;border:1px solid var(--core-line);border-radius:14px;padding:18px;
+    display:flex;flex-direction:column;justify-content:center;gap:6px;position:relative;overflow:hidden;
+  }
+  .kg .glyph{display:flex;gap:6px;margin-bottom:6px}
+  .kg .dot{width:9px;height:9px;border-radius:50%;background:var(--core);opacity:.85}
+  .kg .dot:nth-child(2){opacity:.5;transform:translateY(6px)}
+  .kg .dot:nth-child(3){opacity:.7;transform:translateY(-3px)}
+  .kg .kg-t{font-weight:700;font-size:16px}
+  .kg .kg-d{color:var(--muted);font-size:12.5px}
+  .kg .kg-tag{font-family:var(--mono);font-size:10.5px;color:var(--core);margin-top:8px;letter-spacing:.04em}
+
+  .rules{display:flex;flex-direction:column;gap:9px}
+  .rule{
+    background:#fff;border:1px solid var(--core-line);border-radius:11px;padding:10px 13px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .rule .badge{font-family:var(--mono);font-size:10px;font-weight:600;color:#fff;background:var(--core);border-radius:6px;padding:3px 7px;flex:0 0 auto}
+  .rule.flag .badge{background:var(--flag)}
+  .rule .rt{font-size:13.5px;font-weight:500}
+  .rule .rd{font-size:11.5px;color:var(--muted);margin-left:auto;font-family:var(--mono)}
+  .engine{
+    grid-column:1 / -1;background:var(--ink);color:#dfeae7;border-radius:12px;padding:13px 16px;
+    display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:13px;
+  }
+  .engine .ed{font-size:11px;color:#9fb6b1;margin-left:auto;letter-spacing:.04em}
+  .engine .pulse{width:8px;height:8px;border-radius:50%;background:#46d6a0;box-shadow:0 0 0 0 rgba(70,214,160,.6);animation:p 2.4s infinite}
+  @keyframes p{0%{box-shadow:0 0 0 0 rgba(70,214,160,.55)}70%{box-shadow:0 0 0 10px rgba(70,214,160,0)}100%{box-shadow:0 0 0 0 rgba(70,214,160,0)}}
+
+  /* ---------- app journey (vertical) ---------- */
+  .journey{display:flex;flex-direction:column;gap:0}
+  .row{display:flex;align-items:stretch;gap:14px}
+  .row .main{flex:1 1 auto}
+  .row .side{flex:0 0 230px;display:flex;align-items:center}
+  .vchev{display:flex;justify-content:flex-start;padding-left:26px;height:18px;align-items:center}
+  .vchev::before{content:"";width:2px;height:18px;background:var(--app-line)}
+  .vchev .a{margin-left:-1px;width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid var(--app);align-self:flex-end;margin-bottom:0}
+  .branch{
+    border:1px dashed;border-radius:11px;padding:11px 13px;font-size:13px;width:100%;
+    display:flex;flex-direction:column;gap:3px;
+  }
+  .branch .bt{font-weight:600;font-size:12.5px}
+  .branch .bd{font-size:11.5px}
+  .branch.flag{border-color:var(--flag);background:var(--flag-bg);color:var(--flag)}
+  .branch.doc{border-color:var(--doc);background:var(--doc-bg);color:var(--doc)}
+  .branch.loop{border-color:var(--app-line);background:var(--app-bg);color:var(--app)}
+  .connector-label{font-family:var(--mono);font-size:10.5px;color:var(--muted);padding:0 0 0 8px;align-self:center}
+
+  /* ---------- legend ---------- */
+  .legend{display:flex;flex-wrap:wrap;gap:18px;margin-top:24px;padding-top:18px;border-top:1px solid var(--line)}
+  .leg{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted)}
+  .leg .sw{width:13px;height:13px;border-radius:4px;border:1px solid rgba(0,0,0,.08)}
+  .sw.build{background:var(--build)} .sw.core{background:var(--core)} .sw.app{background:var(--app)}
+  .sw.flag{background:var(--flag)} .sw.doc{background:var(--doc)}
+
+  footer{margin-top:26px;color:var(--muted);font-size:12px;font-family:var(--mono);letter-spacing:.02em}
+
+  /* ---------- entrance ---------- */
+  .reveal{opacity:0;transform:translateY(10px);animation:rise .6s cubic-bezier(.2,.7,.2,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+  .d1{animation-delay:.05s}.d2{animation-delay:.13s}.d3{animation-delay:.21s}.d4{animation-delay:.29s}.d5{animation-delay:.37s}
+
+  @media (max-width:760px){
+    .core-grid{grid-template-columns:1fr}
+    .row{flex-direction:column;gap:8px}
+    .row .side{flex:1 1 auto}
+    .pipe .node{flex:1 1 100%}
+    .chev{transform:rotate(90deg);flex-basis:100%;height:18px}
+    .split{flex:1 1 100%}
+    .zhint{margin-left:0;flex-basis:100%}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .reveal{animation:none;opacity:1;transform:none}
+    .engine .pulse{animation:none}
+    .node{transition:none}
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="reveal d1">
+    <p class="eyebrow">Clinical AI Agent · Architecture &amp; Flow</p>
+    <h1> AI 智能体</h1>
+  </header>
+
+  <!-- ============ BUILD SIDE ============ -->
+  <section class="zone build reveal d2">
+    <div class="zone-head">
+      <span class="ztag">Build · 离线</span>
+      <span class="zname">构建侧</span>
     </div>
+    <div class="pipe">
+      <div class="node accent-build"><span class="idx">01</span><div class="t">医学知识采集</div><div class="d">按疾病名 + 来源配置抓取指南/文献</div></div>
+      <div class="chev"></div>
+      <div class="node accent-build"><span class="idx">02</span><div class="t">文档解析</div><div class="d">识别正文、表格，<b>尤其决策树/流程图</b></div></div>
+      <div class="chev"></div>
+      <div class="node accent-build"><span class="idx">03</span><div class="t">结构化切分</div><div class="d">决策树·表格整体保留，不被切断</div></div>
+      <div class="chev"></div>
+      <div class="node accent-build"><span class="idx">04</span><div class="t">语义理解与抽取</div><div class="d">两路并行 →</div></div>
+      <div class="chev"></div>
+      <div class="split">
+        <div class="chip"><span class="k">实体/关系</span>元素子图</div>
+        <div class="chip"><span class="k">流程/阈值/问诊</span>规则子图</div>
+      </div>
+      <div class="chev"></div>
+      <div class="node accent-build"><span class="idx">05</span><div class="t">图谱构建 + 规则工程化</div><div class="d">可执行化 · 一致性校验 · 评测集 · <b>专家校验</b></div></div>
+    </div>
+  </section>
+
+  <div class="spine reveal d2">
+    <span class="lab">构建产物入图谱</span>
+    <span class="seg"></span><span class="arrowhead"></span>
   </div>
 
-  <!-- ── MAIN SWIMLANE ────────────────────────────────── -->
-  <div class="wrapper">
-
-    <!-- Phase bar -->
-    <div class="phase-bar">
-      <div class="phase-label"></div>
-      <div class="phase-cell">
-        <div class="phase-icon">🚪</div>
-        <div class="phase-num">PHASE 1</div>
-        <div class="phase-name">扫码入组</div>
+  <!-- ============ CORE ============ -->
+  <section class="core reveal d3">
+    <div class="zone-head">
+      <span class="ztag">Core · 衔接枢纽</span>
+      <span class="zname">统一知识图谱 + 推理引擎</span>
+      <span class="zhint" style="color:var(--core)">规则逻辑在图谱里，执行靠引擎</span>
+    </div>
+    <div class="core-grid">
+      <div class="kg">
+        <div class="glyph"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="kg-t">统一知识图谱</div>
+        <div class="kg-d">元素子图 + 规则子图，规则节点引用元素节点</div>
+        <div class="kg-tag">可检索 · 可执行 · 可溯源（来源/版本/证据等级）</div>
       </div>
-      <div class="phase-cell">
-        <div class="phase-icon">📋</div>
-        <div class="phase-num">PHASE 2</div>
-        <div class="phase-name">建档分层</div>
+      <div class="rules">
+        <div class="rule"><span class="badge">STR</span><span class="rt">风险分层规则</span><span class="rd">决策树 / 评分</span></div>
+        <div class="rule"><span class="badge">ASK</span><span class="rt">预问诊规则</span><span class="rd">分支问诊流</span></div>
+        <div class="rule"><span class="badge">MNG</span><span class="rt">管理路径规则</span><span class="rd">状态机+决策表+模板</span></div>
       </div>
-      <div class="phase-cell">
-        <div class="phase-icon">👥</div>
-        <div class="phase-num">PHASE 3</div>
-        <div class="phase-name">组建康复团队</div>
-      </div>
-      <div class="phase-cell phase-loop">
-        <div class="phase-icon">🔄</div>
-        <div class="phase-num">PHASE 4 · 核心循环</div>
-        <div class="phase-name">AI驱动日常管理</div>
-      </div>
-      <div class="phase-cell">
-        <div class="phase-icon">📊</div>
-        <div class="phase-num">PHASE 5</div>
-        <div class="phase-name">周期随访评估</div>
-      </div>
-      <div class="phase-cell">
-        <div class="phase-icon">⚠️</div>
-        <div class="phase-num">PHASE 6</div>
-        <div class="phase-name">异常升级处理</div>
-      </div>
-      <div class="phase-cell">
-        <div class="phase-icon">🏥</div>
-        <div class="phase-num">PHASE 7</div>
-        <div class="phase-name">复诊</div>
+      <div class="engine">
+        <span class="pulse"></span>
+        <span>推理编排引擎</span>
+        <span class="ed">规则引擎 · 状态机 · 推理器　|　LLM 只做：理解输入 + 生成表达</span>
       </div>
     </div>
+  </section>
 
-    <!-- ── ROW 1: 患者 ── -->
-    <div class="swimlane">
-      <div class="actor-label al-patient">
-        <div class="actor-emoji">🧑‍⚕️</div>
-        <div class="actor-name">患 者</div>
-        <div class="actor-sub">C端小程序</div>
-      </div>
-      <!-- P1 -->
-      <div class="step mix">
-        <span class="step-badge badge-mix">患者操作</span>
-        <div class="step-title">扫描项目二维码</div>
-        <div class="step-items">
-          <div class="step-item">服务人员引导</div>
-          <div class="step-item">手机扫码打开小程序</div>
-          <div class="step-item">微信一键注册登录</div>
-        </div>
-      </div>
-      <!-- P2 -->
-      <div class="step mix">
-        <span class="step-badge badge-mix">患者填写</span>
-        <div class="step-title">基础信息 + 病例 + 分层评估表单</div>
-        <div class="step-items">
-          <div class="step-item">引导分步填写</div>
-          <div class="step-item">或授权医院HIS直接获取</div>
-        </div>
-      </div>
-      <!-- P3 -->
-      <div class="step mix">
-        <span class="step-badge badge-mix">患者选择</span>
-        <div class="step-title">查看健康服务方案</div>
-        <div class="step-items">
-          <div class="step-item">了解每位成员服务内容</div>
-          <div class="step-item">选择服务方案（基础/全面/精英）</div>
-        </div>
-      </div>
-      <!-- P4 -->
-      <div class="step mix" style="border-color:#60CFFF;background:#EBF8FF;">
-        <span class="step-badge badge-ai">日常使用</span>
-        <div class="step-title">每日健康管理</div>
-        <div class="step-items">
-          <div class="step-item">完成今日任务打卡（饮食/运动/健康数据上报）</div>
-          <div class="step-item">回复AI随访问题</div>
-          <div class="step-item">查看个性化推送内容</div>
-          <div class="step-item">有问题问AI助手</div>
-        </div>
-      </div>
-      <!-- P5 -->
-      <div class="step mix">
-        <span class="step-badge badge-mix">患者参与</span>
-        <div class="step-title">完成阶段随访</div>
-        <div class="step-items">
-          <div class="step-item">回答周期随访问卷</div>
-          <div class="step-item">完成指定复查检查</div>
-          <div class="step-item">查看阶段健康报告</div>
-        </div>
-      </div>
-      <!-- P6 -->
-      <div class="step mix">
-        <span class="step-badge badge-mix">患者响应</span>
-        <div class="step-title">收到异常提示</div>
-        <div class="step-items">
-          <div class="step-item">AI给出初步指导</div>
-          <div class="step-item">健管师主动联系</div>
-          <div class="step-item">按指导执行或就医</div>
-        </div>
-      </div>
-      <!-- P7 -->
-      <div class="step mix">
-        <span class="step-badge badge-mix">到院复查</span>
-        <div class="step-title">线下复诊</div>
-        <div class="step-items">
-          <div class="step-item">系统提前提醒+准备清单</div>
-          <div class="step-item">到院完成检查</div>
-          <div class="step-item">医生结合数据面诊</div>
-        </div>
-      </div>
+  <div class="spine reveal d3">
+    <span class="lab">引擎驱动应用侧</span>
+    <span class="seg"></span><span class="arrowhead"></span>
+  </div>
+
+  <!-- ============ APP SIDE ============ -->
+  <section class="zone app reveal d4">
+    <div class="zone-head">
+      <span class="ztag">Run · 在线</span>
+      <span class="zname">应用侧</span>
+      <span class="zhint">每位患者实时运行 · 全程留痕可审计</span>
     </div>
 
-    <div class="row-gap"></div>
+    <div class="journey">
+      <div class="row"><div class="main node accent-app"><div class="t">患者基础信息</div><div class="d">家族/遗传史 · 现有疾病 · 当前症状 · 生活方式</div></div></div>
+      <div class="vchev"><span class="a"></span></div>
 
-    <!-- ── ROW 2: AI执行引擎 ── -->
-    <div class="swimlane">
-      <div class="actor-label al-ai">
-        <div class="actor-emoji">🤖</div>
-        <div class="actor-name">AI执行引擎</div>
-        <div class="actor-sub">自动化核心</div>
+      <div class="row">
+        <div class="main node accent-app"><span class="idx">06</span><div class="t">预问诊交互</div><div class="d"></div></div>
+        <div class="side"><div class="branch loop"><span class="bt">信息不足 ↺ 追问</span><span class="bd">补齐专项评估所需元素</span></div></div>
       </div>
-      <!-- P1 -->
-      <div class="step ai">
-        <span class="step-badge badge-ai">AI自动</span>
-        <div class="step-title">关联主治医生</div>
-        <div class="step-items">
-          <div class="step-item">自动建立患者-医护关联</div>
-          <div class="step-item">发送欢迎消息</div>
-        </div>
-      </div>
-      <!-- P2 -->
-      <div class="step ai">
-        <span class="step-badge badge-ai">AI自动</span>
-        <div class="step-title">OCR提取 · 结构化建档</div>
-        <div class="step-items">
-          <div class="step-item">OCR识别病历文件</div>
-          <div class="step-item">LLM提取关键信息</div>
-          <div class="step-item">自动生成健康档案</div>
+      <div class="vchev"><span class="a"></span></div>
 
-          <div class="step-item">患者疾病风险分层</div>
-        </div>
-      </div>
-      <!-- P3 -->
-      <div class="step ai">
-        <span class="step-badge badge-ai">AI匹配</span>
-        <div class="step-title"> 匹配方案</div>
-        <div class="step-items">
-          <div class="step-item">生成个性化服务方案</div>
-          <div class="step-item">激活对应管理路径</div>
-        </div>
-      </div>
-      <!-- P4 核心循环 -->
-      <div class="step loop">
-        <span class="step-badge badge-ai">⟳ 持续自动执行</span>
-        <div class="step-title">核心AI管理循环</div>
-        <div class="step-items">
-          <div class="step-item">📅 按路径时序发提醒</div>
-          <div class="step-item">💬 发起AI随访对话</div>
-          <div class="step-item">💬 智能助手实时响应</div>
-          <div class="step-item">📚 推送个性化内容</div>
-          <div class="step-item">📈 实时分析数据</div>
-          <div class="step-item">🔔 检测异常自动预警</div>
-          <div class="step-item">→ 正常则继续循环</div>
-        </div>
-      </div>
-      <!-- P5 -->
-      <div class="step ai">
-        <span class="step-badge badge-ai">AI自动</span>
-        <div class="step-title">随访发起 · 数据解析</div>
-        <div class="step-items">
-          <div class="step-item">按节点发起随访问卷</div>
-          <div class="step-item">解析患者回答</div>
-          <div class="step-item">生成阶段报告审核版本</div>
-          <div class="step-item">判断正常/异常分流</div>
-        </div>
-      </div>
-      <!-- P6 -->
-      <div class="step ai">
-        <span class="step-badge badge-ai">AI优先处理</span>
-        <div class="step-title">L1自动干预</div>
-        <div class="step-items">
-          <div class="step-item">生成异常摘要</div>
-          <div class="step-item">推送初步指导建议</div>
-          <div class="step-item">加入重点监测名单</div>
-          <div class="step-item">超阈值→升级健管师</div>
-        </div>
-      </div>
-      <!-- P7 -->
-      <div class="step ai">
-        <span class="step-badge badge-ai">AI自动</span>
-        <div class="step-title">生成就诊前摘要</div>
-        <div class="step-items">
-          <div class="step-item">汇总近期监测数据</div>
-          <div class="step-item">标注关键事件</div>
-          <div class="step-item">生成医生接诊摘要</div>
-          <div class="step-item">复诊后更新档案</div>
-        </div>
+      <div class="row"><div class="main node accent-app"><span class="idx">07</span><div class="t">风险评估与分层</div><div class="d">分层规则 + 图谱 → 高/中/低 + 危险因素清单</div></div></div>
+      <div class="vchev"><span class="a"></span></div>
+
+      <div class="row"><div class="main node accent-app"><span class="idx">08</span><div class="t">阶段判断与路径决策</div><div class="d">状态机定位：危险因素→早期→筛查→诊断→治疗→管理</div></div></div>
+      <div class="vchev"><span class="a"></span></div>
+
+      <div class="row"><div class="main node accent-app"><span class="idx">09</span><div class="t">管理方案生成</div><div class="d">三段式：结论 + 依据（可溯源）+ 下一步</div></div></div>
+      <div class="vchev"><span class="a"></span></div>
+
+      <div class="row">
+        <div class="main node accent-app"><span class="idx">10</span><div class="t">随访 · 依从性 · 闭环</div><div class="d">自动提醒 · 跟踪依从性</div></div>
+        <div class="side"><div class="branch loop"><span class="bt">确诊结果回流 ↺</span><span class="bd">触发升级/降级，重生成方案；数据反哺规则优化</span></div></div>
       </div>
     </div>
+  </section>
 
-    <div class="row-gap"></div>
+  <!-- ============ LEGEND ============ -->
+  <div class="legend reveal d5">
+    <div class="leg"><span class="sw build"></span>构建侧（离线一次性）</div>
+    <div class="leg"><span class="sw core"></span>知识图谱 + 引擎</div>
+    <div class="leg"><span class="sw app"></span>应用侧（在线实时）</div>
+  </div>
 
-    <!-- ── ROW 3: 健管师 ── -->
-    <div class="swimlane">
-      <div class="actor-label al-hm">
-        <div class="actor-emoji">👩‍💼</div>
-        <div class="actor-name">健管师</div>
-        <div class="actor-sub">处理例外</div>
-      </div>
-      <!-- P1 -->
-      <div class="step human">
-        <span class="step-badge badge-human">人工辅助</span>
-        <div class="step-title">协助入组</div>
-        <div class="step-items">
-          <div class="step-item">线下辅助患者注册</div>
-          <div class="step-item">引导添加企业微信</div>
-        </div>
-      </div>
-      <!-- P2 -->
-      <div class="step human">
-        <span class="step-badge badge-human">人工确认</span>
-        <div class="step-title">审核档案完整性</div>
-        <div class="step-items">
-          <div class="step-item">确认AI提取信息无误</div>
-          <div class="step-item">补充缺失关键字段</div>
-        </div>
-      </div>
-      <!-- P3 -->
-      <div class="step human">
-        <span class="step-badge badge-human">人工服务</span>
-        <div class="step-title">首次人工接触</div>
-        <div class="step-items">
-          <div class="step-item">电话/消息介绍服务</div>
-          <div class="step-item">建立初始信任关系</div>
-          <div class="step-item">引导服务权益选择</div>
-        </div>
-      </div>
-      <!-- P4 -->
-      <div class="step empty">
-        <div style="color:rgba(255,255,255,.3);font-size:11px;text-align:center;padding-top:20px;">AI全自动运行<br />无需介入
-        </div>
-      </div>
-      <!-- P5 -->
-      <div class="step mix">
-        <span class="step-badge badge-mix">AI辅助</span>
-        <div class="step-title">审核阶段报告</div>
-        <div class="step-items">
-          <div class="step-item">查看AI生成报告草稿</div>
-          <div class="step-item">一键确认或快速修改</div>
-          <div class="step-item">发送给患者</div>
-        </div>
-      </div>
-      <!-- P6 -->
-      <div class="step human">
-        <span class="step-badge badge-human">人工干预</span>
-        <div class="step-title">L2响应异常升级</div>
-        <div class="step-items">
-          <div class="step-item">查看AI整理的异常摘要</div>
-          <div class="step-item">联系患者核实情况</div>
-          <div class="step-item">给出处理建议</div>
-          <div class="step-item">判断是否升级医生</div>
-        </div>
-      </div>
-      <!-- P7 -->
-      <div class="step human">
-        <span class="step-badge badge-human">人工跟进</span>
-        <div class="step-title">复查前后服务</div>
-        <div class="step-items">
-          <div class="step-item">提醒复查注意事项</div>
-          <div class="step-item">协助预约检查（高端包）</div>
-          <div class="step-item">复查后跟进结果录入</div>
-        </div>
-      </div>
-    </div>
+  <footer class="reveal d5">知识图谱与规则为“弹药”，推理引擎“扣扳机”，LLM 负责理解输入与生成表达 · 决策权在规则</footer>
 
-    <div class="row-gap"></div>
-
-    <!-- ── ROW 4: 医生 ── -->
-    <div class="swimlane">
-      <div class="actor-label al-doc">
-        <div class="actor-emoji">👨‍⚕️</div>
-        <div class="actor-name">医 生</div>
-        <div class="actor-sub">临床决策</div>
-      </div>
-      <!-- P1 -->
-      <div class="step human">
-        <span class="step-badge badge-human">医生发起</span>
-        <div class="step-title">邀请患者入组</div>
-        <div class="step-items">
-          <div class="step-item">出院/门诊时引导扫码</div>
-          <div class="step-item">推荐合适服务权益</div>
-        </div>
-      </div>
-      <!-- P2 -->
-      <div class="step mix">
-        <span class="step-badge badge-mix">医生确认</span>
-        <div class="step-title">审核档案 · 确认分层</div>
-        <div class="step-items">
-          <div class="step-item">查看AI提取的病情摘要</div>
-          <div class="step-item">确认风险分层是否准确</div>
-          <div class="step-item">确认管理方案（视情况定是否需要确认）</div>
-        </div>
-      </div>
-      <!-- P3 -->
-      <div class="step empty">
-        <div style="color:rgba(255,255,255,.3);font-size:11px;text-align:center;padding-top:20px;">服务激活<br />无需操作</div>
-      </div>
-      <!-- P4 -->
-      <div class="step mix">
-        <span class="step-badge badge-mix">AI辅助</span>
-        <div class="step-title">查看患者异常看板</div>
-        <div class="step-items">
-          <div class="step-item">AI汇总异常患者列表</div>
-          <div class="step-item">只看AI标记需决策的</div>
-          <div class="step-item">无需主动追踪每个患者</div>
-        </div>
-      </div>
-      <!-- P5 -->
-      <div class="step mix">
-        <span class="step-badge badge-mix">医生决策</span>
-        <div class="step-title">审核报告 · 调整方案</div>
-        <div class="step-items">
-          <div class="step-item">查看AI阶段性报告</div>
-          <div class="step-item">判断是否需要调整方案</div>
-          <div class="step-item">确认或修改管理路径</div>
-        </div>
-      </div>
-      <!-- P6 -->
-      <div class="step human">
-        <span class="step-badge badge-human">临床决策</span>
-        <div class="step-title">L3临床干预</div>
-        <div class="step-items">
-          <div class="step-item">查看AI整理的患者摘要</div>
-          <div class="step-item">做临床判断与处置决策</div>
-          <div class="step-item">语音/文字输入需调整内容</div>
-          <div class="step-item">记录决策依据</div>
-        </div>
-      </div>
-      <!-- P7 -->
-      <div class="step human">
-        <span class="step-badge badge-human">核心价值</span>
-        <div class="step-title">门诊复查 · 数据赋能</div>
-        <div class="step-items">
-          <div class="step-item">基于AI摘要高效接诊</div>
-          <div class="step-item">随访数据支持临床决策</div>
-          <div class="step-item">科研数据自动积累</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="row-gap"></div>
-
-    <!-- ── ROW 5: 数据资产 ── -->
-    <div class="swimlane">
-      <div class="actor-label al-data">
-        <div class="actor-emoji">💾</div>
-        <div class="actor-name">数据资产</div>
-        <div class="actor-sub">荣科核心护城河</div>
-      </div>
-      <!-- P1 -->
-      <div class="step data">
-        <span class="step-badge badge-data">数据采集</span>
-        <div class="step-title">患者基础档案</div>
-        <div class="step-desc">病情、手术信息、风险分层标签</div>
-      </div>
-      <!-- P2 -->
-      <div class="step data">
-        <span class="step-badge badge-data">数据结构化</span>
-        <div class="step-title">结构化医疗档案</div>
-        <div class="step-desc">病历信息提取结构化存储，形成可分析的患者画像</div>
-      </div>
-      <!-- P3 -->
-      <div class="step data">
-        <span class="step-badge badge-data">路径激活</span>
-        <div class="step-title">管理路径配置</div>
-        <div class="step-desc">专科医生共建的路径IP激活，患者进入自动化管理</div>
-      </div>
-      <!-- P4 -->
-      <div class="step data" style="background:#EEE8FF;border-color:#B87FE8;">
-        <span class="step-badge badge-data">持续积累 ⟳</span>
-        <div class="step-title">行为 + 健康数据流</div>
-        <div class="step-desc">每日打卡、随访回答、症状记录、依从性数据持续写入患者档案</div>
-      </div>
-      <!-- P5 -->
-      <div class="step data">
-        <span class="step-badge badge-data">数据分析</span>
-        <div class="step-title">阶段健康报告</div>
-        <div class="step-desc">趋势分析、复发风险评估、干预效果量化</div>
-      </div>
-      <!-- P6 -->
-      <div class="step data">
-        <span class="step-badge badge-data">干预记录</span>
-        <div class="step-title">异常处理记录</div>
-        <div class="step-desc">每次异常事件、处理过程、结果归档，训练预警模型</div>
-      </div>
-      <!-- P7 -->
-      <div class="step data">
-        <span class="step-badge badge-data">科研资产</span>
-        <div class="step-title">全周期随访数据集</div>
-        <div class="step-desc">结构化真实世界数据，支持论文/课题/保险合作</div>
-      </div>
-    </div>
-
-    <!-- ══════════════════════════════════════════════ -->
-    <!-- AI 核心循环 放大图                              -->
-    <!-- ══════════════════════════════════════════════ -->
-    <div class="section">
-      <div class="section-title">🔄 AI驱动核心循环（PHASE 4 放大）</div>
-      <div class="section-sub">这是产品的心脏。日常管理全部由AI自动执行，患者规模扩大时边际成本趋近于零。</div>
-
-      <div class="loop-diagram">
-        <div class="loop-node orange">
-          <div class="loop-node-icon">📅</div>
-          <div class="loop-node-name">路径时序触发</div>
-          <div class="loop-node-desc">D7/D14/D30…<br />节点自动唤起</div>
-        </div>
-        <div class="loop-arrow">
-          <div class="loop-arrow-line">→</div>
-          <div class="loop-arrow-label">自动触发</div>
-        </div>
-        <div class="loop-node">
-          <div class="loop-node-icon">💬</div>
-          <div class="loop-node-name">AI发起随访</div>
-          <div class="loop-node-desc">对话式问卷<br />收集健康数据</div>
-        </div>
-        <div class="loop-arrow">
-          <div class="loop-arrow-line">→</div>
-          <div class="loop-arrow-label">NLP解析</div>
-        </div>
-        <div class="loop-node">
-          <div class="loop-node-icon">🧠</div>
-          <div class="loop-node-name">数据分析</div>
-          <div class="loop-node-desc">结构化提取<br />趋势/异常检测</div>
-        </div>
-        <div class="loop-arrow">
-          <div class="loop-arrow-line">→</div>
-          <div class="loop-arrow-label">分支判断</div>
-        </div>
-        <div class="loop-node green">
-          <div class="loop-node-icon">✅</div>
-          <div class="loop-node-name">正常</div>
-          <div class="loop-node-desc">更新档案<br />推送内容<br />继续循环</div>
-        </div>
-        <div class="loop-arrow">
-          <div class="loop-arrow-line">→</div>
-          <div class="loop-arrow-label">自动推送</div>
-        </div>
-        <div class="loop-node">
-          <div class="loop-node-icon">📚</div>
-          <div class="loop-node-name">个性化内容</div>
-          <div class="loop-node-desc">科普/饮食/<br />康复/用药</div>
-        </div>
-        <div class="loop-arrow">
-          <div class="loop-arrow-line" style="transform:rotate(180deg)">→</div>
-          <div class="loop-arrow-label">下个节点</div>
-        </div>
-        <div class="loop-node red">
-          <div class="loop-node-icon">⚠️</div>
-          <div class="loop-node-name">异常</div>
-          <div class="loop-node-desc">触发升级<br />分级处理</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════════════════════════════════════════════ -->
-    <!-- 异常升级四级机制                                -->
-    <!-- ══════════════════════════════════════════════ -->
-    <div class="section">
-      <div class="section-title">⚠️ 异常升级四级机制（PHASE 6 放大）</div>
-      <div class="section-sub">AI优先处理，只有真正需要人工的才升级，确保人力集中在高价值场景。</div>
-
-      <div class="escalation">
-        <div class="esc-item esc-l1" data-level="L1">
-          <div class="esc-header">🤖 L1 · AI自动处理</div>
-          <div class="esc-who">执行者：AI引擎 · 响应时间：即时</div>
-          <div class="esc-items">
-            <div class="esc-i">数据轻微偏离正常范围</div>
-            <div class="esc-i">发送标准化指导建议</div>
-            <div class="esc-i">加入重点监测名单</div>
-            <div class="esc-i">次日自动复查跟进</div>
-          </div>
-        </div>
-        <div class="esc-item esc-l2" data-level="L2">
-          <div class="esc-header">👩‍💼 L2 · 健管师介入</div>
-          <div class="esc-who">执行者：健管师 · 响应时间：2小时内</div>
-          <div class="esc-items">
-            <div class="esc-i">AI判定超出自动处理范围</div>
-            <div class="esc-i">查看AI整理的异常摘要</div>
-            <div class="esc-i">主动联系患者核实</div>
-            <div class="esc-i">给出专业处理建议</div>
-          </div>
-        </div>
-        <div class="esc-item esc-l3" data-level="L3">
-          <div class="esc-header">👨‍⚕️ L3 · 医生临床决策</div>
-          <div class="esc-who">执行者：主治医生 · 响应时间：当日</div>
-          <div class="esc-items">
-            <div class="esc-i">健管师判定需要临床判断</div>
-            <div class="esc-i">查看AI患者摘要5秒掌握全局</div>
-            <div class="esc-i">做出临床处置决策</div>
-            <div class="esc-i">调整管理方案</div>
-          </div>
-        </div>
-        <div class="esc-item esc-l4" data-level="L4">
-          <div class="esc-header">🏥 L4 · 紧急就医</div>
-          <div class="esc-who">执行者：患者+医院 · 响应时间：即刻</div>
-          <div class="esc-items">
-            <div class="esc-i">生命体征异常/急性症状</div>
-            <div class="esc-i">AI/医生判定需立即就医</div>
-            <div class="esc-i">系统一键呼叫/导航</div>
-            <div class="esc-i">自动通知主治医生</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════════════════════════════════════════════ -->
-    <!-- 三方价值闭环                                    -->
-    <!-- ══════════════════════════════════════════════ -->
-    <div class="section">
-      <div class="section-title">💡 三方价值闭环 · 院方利益自驱设计</div>
-      <div class="section-sub">让医院、医生、患者的利益与管理行为高度绑定，系统无需外部运营人力持续推动。</div>
-
-      <div class="value-grid">
-        <div class="value-card vc-patient">
-          <div class="vc-title">🧑‍⚕️ 患者获得的价值</div>
-          <div class="vc-item">出院后不再"断联"，全程有人管</div>
-          <div class="vc-item">小荣医生24小时解答疑问</div>
-          <div class="vc-item">个性化康复方案，不再千篇一律</div>
-          <div class="vc-item">异常早发现，避免严重并发症</div>
-          <div class="vc-item">家属同步掌握康复进展</div>
-        </div>
-        <div class="value-card vc-doctor">
-          <div class="vc-title">👨‍⚕️ 医生获得的价值</div>
-          <div class="vc-item">复诊率提升 → 直接增加收入</div>
-          <div class="vc-item">结构化随访数据 → 论文/课题/职称</div>
-          <div class="vc-item">患者骚扰减少80% → 核心时间解放</div>
-          <div class="vc-item">接诊有AI摘要 → 效率大幅提升</div>
-          <div class="vc-item">患者依附增强 → 医生个人IP建设</div>
-        </div>
-        <div class="value-card vc-hospital">
-          <div class="vc-title">🏥 医院获得的价值</div>
-          <div class="vc-item">复诊率↑ → 门诊/检查收入增加</div>
-          <div class="vc-item">服务包收费 → 医保外自费增收</div>
-          <div class="vc-item">DRG合规 → 再入院率降低</div>
-          <div class="vc-item">患者满意度↑ → 区域竞争力提升</div>
-          <div class="vc-item">真实世界数据 → 商业保险合作</div>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- end wrapper -->
-</body>
-
-</html>
+</div>
