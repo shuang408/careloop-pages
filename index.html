@@ -3,16 +3,163 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5" />
-<title>AI基础设施七大模块扩充学习笔记｜手机适配完整版</title>
+<title>AI基础设施七大模块扩充学习笔记｜阅读优化版</title>
+
 <style>
-:root{--bg:#061020;--panel:rgba(255,255,255,.08);--panel2:rgba(255,255,255,.12);--line:rgba(255,255,255,.14);--text:#eef6ff;--muted:#a8b8d3;--weak:#7f90ad;--cyan:#38d9ff;--purple:#aa78ff;--green:#4be1a5;--orange:#ffb45f;--red:#ff6578;--radius:20px;}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;color:var(--text);background:radial-gradient(circle at 15% 6%,rgba(56,217,255,.22),transparent 30%),radial-gradient(circle at 88% 8%,rgba(170,120,255,.22),transparent 32%),linear-gradient(180deg,#050914,#0a1630 48%,#050914);line-height:1.72}a{color:inherit}.top{position:sticky;top:0;z-index:30;background:rgba(5,9,20,.88);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}.top-inner{max-width:1180px;margin:0 auto;padding:12px 14px}.brand{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px}.brand h1{font-size:18px;margin:0;letter-spacing:-.2px}.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}.badge{font-size:11px;padding:5px 9px;border-radius:999px;background:rgba(75,225,165,.12);border:1px solid rgba(75,225,165,.25);color:#c9ffe8;white-space:nowrap}.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}.tab-btn{flex:0 0 auto;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--muted);border-radius:999px;padding:9px 12px;font-weight:700;font-size:13px}.tab-btn span{display:inline-grid;place-items:center;width:20px;height:20px;margin-right:6px;border-radius:50%;background:rgba(255,255,255,.1);font-size:11px}.tab-btn.active{color:#061020;background:linear-gradient(135deg,var(--cyan),var(--green));border-color:transparent}.shell{max-width:1180px;margin:0 auto;padding:18px 14px 70px}.intro{padding:20px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(135deg,rgba(56,217,255,.11),rgba(170,120,255,.10));margin-bottom:16px}.intro h2{font-size:28px;line-height:1.16;margin:0 0 10px}.intro p{margin:0;color:var(--muted)}.module{display:none;animation:fade .25s ease}.module.active{display:block}@keyframes fade{from{opacity:.3;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}.module-hero{padding:20px;border:1px solid var(--line);border-radius:24px;background:rgba(255,255,255,.075);margin-bottom:14px}.kicker{display:inline-block;font-size:12px;color:#c9f7ff;border:1px solid rgba(56,217,255,.24);background:rgba(56,217,255,.09);border-radius:999px;padding:5px 10px;margin-bottom:10px}.module h2{font-size:30px;line-height:1.15;margin:0 0 8px;letter-spacing:-.4px}.subtitle{margin:0 0 12px;color:#dcecff;font-weight:700}.module-overview{color:var(--muted);background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:14px}.diagram-wrap{border:1px solid var(--line);border-radius:22px;overflow:auto;background:rgba(0,0,0,.24);margin:14px 0}.diagram-wrap svg{min-width:820px;width:100%;height:auto;display:block}.mobile-toc details{border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.06);padding:12px 14px;margin:14px 0}.mobile-toc summary{cursor:pointer;font-weight:800}.mobile-toc a{color:#c9f7ff;text-decoration:none}.content-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.section-card,.note-table{border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.07);padding:17px}.section-card h3,.note-table h4{margin:0 0 10px;font-size:18px;line-height:1.35}.section-card p{margin:0;color:var(--muted);font-size:15px}.section-card b{color:#fff}.note-table{margin-top:14px}.table-scroll{overflow-x:auto;border-radius:14px;border:1px solid rgba(255,255,255,.1)}table{border-collapse:collapse;width:100%;min-width:620px;background:rgba(0,0,0,.16)}td,th{padding:12px;border-bottom:1px solid rgba(255,255,255,.1);vertical-align:top;color:var(--muted);font-size:14px}td:first-child{color:#fff;font-weight:800;width:180px}tr:last-child td{border-bottom:0}.footer-note{margin-top:20px;padding:18px;border-radius:22px;background:rgba(75,225,165,.08);border:1px solid rgba(75,225,165,.2);color:var(--muted)}.footer-note strong{color:#fff}.backtop{position:fixed;right:14px;bottom:16px;z-index:20;border:1px solid var(--line);background:rgba(5,9,20,.84);color:#fff;border-radius:999px;padding:10px 12px;text-decoration:none;font-size:13px}
-@media(max-width:760px){.top-inner{padding:10px}.brand h1{font-size:16px}.badge{display:none}.tab-btn{font-size:12px;padding:8px 10px}.shell{padding:14px 10px 70px}.intro h2{font-size:24px}.module h2{font-size:25px}.content-grid{grid-template-columns:1fr}.section-card{padding:15px;border-radius:18px}.section-card p{font-size:14px}.diagram-wrap svg{min-width:720px}.module-hero{padding:16px}}
-@media(min-width:1100px){.section-card p{font-size:15.5px}}
+:root{
+  --bg:#F6F8FB;
+  --paper:#FFFFFF;
+  --paper-soft:#FAFBFE;
+  --panel:#FFFFFF;
+  --panel2:#F1F5F9;
+  --line:#D9E2EC;
+  --text:#1F2937;
+  --muted:#53627A;
+  --weak:#77849A;
+  --brand:#2563EB;
+  --brand-dark:#1E40AF;
+  --brand-soft:#EAF1FF;
+  --green:#0F766E;
+  --green-soft:#E7F6F3;
+  --orange:#B45309;
+  --orange-soft:#FFF4E5;
+  --purple:#6D28D9;
+  --purple-soft:#F1EAFE;
+  --red:#B91C1C;
+  --red-soft:#FEF2F2;
+  --shadow:0 12px 32px rgba(15,23,42,.08);
+  --radius:18px;
+  --max:1120px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;
+  color:var(--text);
+  background:
+    linear-gradient(180deg,#F8FAFC 0%,#F3F6FB 42%,#F6F8FB 100%);
+  line-height:1.82;
+  font-size:16px;
+  letter-spacing:.01em;
+}
+a{color:inherit;text-decoration:none}
+.top{
+  position:sticky;top:0;z-index:30;
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line);
+  box-shadow:0 8px 26px rgba(15,23,42,.06);
+}
+.top-inner{max-width:var(--max);margin:0 auto;padding:12px 16px 10px}
+.brand{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:10px}
+.brand h1{font-size:20px;margin:0;letter-spacing:-.2px;color:#0F172A;line-height:1.35}
+.brand p{margin:4px 0 0;color:var(--muted);font-size:13px;line-height:1.5}
+.badge{
+  font-size:11px;padding:5px 9px;border-radius:999px;
+  background:var(--brand-soft);border:1px solid #C7D7FE;color:var(--brand-dark);
+  white-space:nowrap;font-weight:700;margin-top:2px;
+}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:2px 0 6px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab-btn{
+  flex:0 0 auto;border:1px solid var(--line);background:#fff;color:#475569;
+  border-radius:999px;padding:9px 12px;font-weight:700;font-size:13px;
+  box-shadow:0 2px 8px rgba(15,23,42,.04);
+}
+.tab-btn span{
+  display:inline-grid;place-items:center;width:20px;height:20px;margin-right:6px;
+  border-radius:50%;background:#EEF2FF;color:var(--brand-dark);font-size:11px;
+}
+.tab-btn.active{color:#fff;background:var(--brand);border-color:var(--brand);box-shadow:0 6px 16px rgba(37,99,235,.22)}
+.tab-btn.active span{background:rgba(255,255,255,.22);color:#fff}
+.shell{max-width:var(--max);margin:0 auto;padding:18px 16px 78px}
+.intro{padding:22px;border:1px solid var(--line);border-radius:24px;background:var(--paper);margin-bottom:16px;box-shadow:var(--shadow)}
+.intro h2{font-size:30px;line-height:1.22;margin:0 0 10px;color:#0F172A;letter-spacing:-.4px}
+.intro p{margin:0;color:var(--muted);font-size:16px}
+.module{display:none;animation:fade .22s ease}.module.active{display:block}
+@keyframes fade{from{opacity:.35;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.module-hero{
+  padding:24px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(135deg,#FFFFFF 0%,#F8FBFF 100%);
+  margin-bottom:16px;box-shadow:var(--shadow);
+}
+.kicker{
+  display:inline-block;font-size:12px;color:var(--brand-dark);border:1px solid #C7D7FE;background:var(--brand-soft);
+  border-radius:999px;padding:5px 10px;margin-bottom:10px;font-weight:700;
+}
+.module h2{font-size:31px;line-height:1.18;margin:0 0 8px;letter-spacing:-.5px;color:#0F172A}
+.subtitle{margin:0 0 12px;color:#334155;font-weight:800;font-size:16px}
+.module-overview{
+  color:var(--muted);background:#F8FAFC;border:1px solid var(--line);
+  border-radius:16px;padding:14px 16px;margin-top:12px;
+}
+.mobile-toc{
+  border:1px solid var(--line);border-radius:18px;background:var(--paper);padding:14px 16px;margin-bottom:16px;box-shadow:0 8px 22px rgba(15,23,42,.04);
+}
+.mobile-toc summary{cursor:pointer;font-weight:800;color:#0F172A}
+.mobile-toc .toc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.mobile-toc a{display:block;color:var(--brand-dark);background:var(--brand-soft);border:1px solid #D8E3FF;border-radius:12px;padding:8px 10px;font-size:13px;font-weight:700}
+.content-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.section-card{
+  padding:18px;border:1px solid var(--line);border-radius:18px;background:var(--paper);
+  box-shadow:0 8px 22px rgba(15,23,42,.05);
+}
+.section-card h3{font-size:18px;line-height:1.42;margin:0 0 9px;color:#0F172A;letter-spacing:-.1px}
+.section-card p{margin:0;color:var(--muted)}
+.section-card ul{margin:8px 0 0;padding-left:20px;color:var(--muted)}
+.section-card li{margin:5px 0}.section-card strong{color:#0F172A}
+.supplement{
+  padding:16px;border-radius:16px;background:var(--green-soft);border:1px solid #BDE9E2;color:#244E4A;margin-top:12px;
+}
+.supplement strong{color:#0F3C36}
+.note-table{
+  margin-top:16px;border:1px solid var(--line);border-radius:18px;background:var(--paper);overflow:hidden;box-shadow:0 8px 22px rgba(15,23,42,.05);
+}
+.note-table h4{margin:0;padding:14px 16px;border-bottom:1px solid var(--line);background:#F8FAFC;color:#0F172A;font-size:16px}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;min-width:720px;background:#fff}
+th,td{padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--muted);font-size:14px;text-align:left}
+th{color:#0F172A;background:#F8FAFC;font-weight:800}
+td:first-child{color:#111827;font-weight:800}tr:last-child td{border-bottom:none}
+.diagram-wrap{
+  margin-top:16px;border:1px solid var(--line);border-radius:18px;background:var(--paper);overflow:auto;box-shadow:0 8px 22px rgba(15,23,42,.05);
+}
+.diagram-wrap svg{display:block;min-width:720px;width:100%;height:auto}
+.diagram-wrap text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif}
+.footer-note{
+  padding:18px;border:1px solid var(--line);border-radius:20px;background:var(--paper);color:var(--muted);box-shadow:var(--shadow);margin-top:16px;
+}
+.footer-note strong{color:#0F172A}
+.backtop{
+  position:fixed;right:16px;bottom:18px;border-radius:999px;padding:10px 12px;
+  background:var(--brand);color:#fff;font-size:13px;font-weight:800;box-shadow:0 12px 26px rgba(37,99,235,.25);
+}
+code,.code{background:#EEF2FF;color:#1E3A8A;border-radius:6px;padding:1px 5px}
+@media(max-width:760px){
+  body{font-size:15px;line-height:1.78;background:#F7F9FC}
+  .top-inner{padding:10px 12px 9px}.brand{align-items:flex-start}.brand h1{font-size:17px}.brand p{font-size:12px}.badge{display:none}
+  .tabs{gap:7px}.tab-btn{font-size:12px;padding:8px 10px}.tab-btn span{width:18px;height:18px;margin-right:5px}
+  .shell{padding:14px 12px 76px}.intro{padding:18px;border-radius:20px}.intro h2{font-size:24px}
+  .module-hero{padding:18px;border-radius:20px}.module h2{font-size:25px}.subtitle{font-size:15px}
+  .mobile-toc .toc-grid{grid-template-columns:1fr}.content-grid{grid-template-columns:1fr;gap:12px}
+  .section-card{padding:16px}.section-card h3{font-size:17px}
+  th,td{font-size:13px;padding:11px 12px}
+  .backtop{right:12px;bottom:14px}
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0B1020;--paper:#111827;--paper-soft:#0F172A;--panel:#111827;--panel2:#1E293B;--line:#263244;--text:#E5E7EB;--muted:#CBD5E1;--weak:#94A3B8;--brand:#60A5FA;--brand-dark:#BFDBFE;--brand-soft:#152544;--green-soft:#102E2B;--orange-soft:#332414;--purple-soft:#251A3D;--red-soft:#33171A;--shadow:0 16px 40px rgba(0,0,0,.28)}
+  html,body{background:#0B1020;color:var(--text)}
+  body{background:linear-gradient(180deg,#0B1020,#111827 48%,#0B1020)}
+  .top{background:rgba(15,23,42,.94)}.brand h1,.module h2,.intro h2,.section-card h3,.mobile-toc summary,.note-table h4,th,td:first-child,.footer-note strong,.section-card strong{color:#F8FAFC}
+  .tab-btn,.intro,.module-hero,.mobile-toc,.section-card,.note-table,.diagram-wrap,.footer-note{background:var(--paper)}
+  .module-overview,.note-table h4,th{background:#0F172A}.tab-btn{color:#CBD5E1}.tab-btn span{background:#1E293B;color:#BFDBFE}.subtitle{color:#E2E8F0}
+  table{background:#111827}.supplement{background:#102E2B;color:#C8F8EE;border-color:#1D5E55}.supplement strong{color:#E3FFF9}
+}
 </style>
+
 </head>
 <body>
-<header class="top" id="top"><div class="top-inner"><div class="brand"><div><h1>AI基础设施七大模块扩充学习笔记</h1><p>手机适配完整版｜不写学习计划，重点补充概念解释、场景、关系和注意点</p></div><div class="badge">Expanded Notes</div></div><div class="tabs"><button class="tab-btn active" data-target="api-token-platform"><span>1</span>API / Token</button><button class="tab-btn" data-target="inference-deploy"><span>2</span>模型部署</button><button class="tab-btn" data-target="gpu-resource"><span>3</span>GPU算力</button><button class="tab-btn" data-target="cluster-cloud"><span>4</span>集群调度</button><button class="tab-btn" data-target="idc-ops"><span>5</span>IDC机房</button><button class="tab-btn" data-target="billing-operation"><span>6</span>运营合规</button><button class="tab-btn" data-target="full-review"><span>7</span>综合复盘</button></div></div></header>
+<header class="top" id="top"><div class="top-inner"><div class="brand"><div><h1>AI基础设施七大模块扩充学习笔记</h1><p>七大模块整合版｜AI基础设施学习笔记</p></div><div class="badge">Reading Edition</div></div><div class="tabs"><button class="tab-btn active" data-target="api-token-platform"><span>1</span>API / Token</button><button class="tab-btn" data-target="inference-deploy"><span>2</span>模型部署</button><button class="tab-btn" data-target="gpu-resource"><span>3</span>GPU算力</button><button class="tab-btn" data-target="cluster-cloud"><span>4</span>集群调度</button><button class="tab-btn" data-target="idc-ops"><span>5</span>IDC机房</button><button class="tab-btn" data-target="billing-operation"><span>6</span>运营合规</button><button class="tab-btn" data-target="full-review"><span>7</span>综合复盘</button></div></div></header>
 <main class="shell">
     <section class="module" id="api-token-platform" data-module="1">
       <div class="module-hero">
@@ -331,9 +478,26 @@ AI基础设施不是模型、GPU、服务器或机房中的某一个点，而是
   <article class="section-card"><h3>11. 你可以形成的核心表达</h3><p>“AI基础设施是把模型能力、算力资源、机房资源、平台软件和运营合规连接起来的服务体系。客户买到的不只是模型，而是可调用、可管理、可计费、可保障、可合规的AI能力。”</p></article>
   <article class="section-card"><h3>12. 三类典型方案</h3><p>轻量方案：聚合API + Token套餐。中型方案：企业AI网关 + 权限账单 + 多模型路由。重型方案：私有化部署 + GPU集群 + IDC资源 + 运维SLA + 合规交付。</p></article>
   <article class="section-card"><h3>13. 最重要的学习方法</h3><p>不要孤立背术语。每学一个词，都问三件事：它解决什么问题？它在链路中连接谁和谁？如果它出问题，客户会感受到什么？这样你会更快建立基础设施思维。</p></article>
+  
+  <article class="section-card"><h3>14. 补充概念：容易漏掉但很重要的一组词</h3><p>检查前面内容后，建议额外补齐这些概念。它们不一定属于某一个单独模块，但会频繁出现在真实方案、报价、架构图和客户沟通中。</p></article>
+  <div class="note-table"><h4>补充概念清单：建议加入你的长期笔记</h4><div class="table-scroll"><table><thead><tr><th>概念</th><th>基础解释</th><th>放在AI基础设施里的位置</th><th>容易忽略的点</th></tr></thead><tbody>
+  <tr><td>MaaS / IaaS / PaaS / SaaS</td><td>MaaS 是模型即服务；IaaS 是基础算力资源；PaaS 是平台能力；SaaS 是面向业务用户的软件服务。</td><td>帮助你判断客户买的是模型能力、GPU资源、开发平台，还是完整应用。</td><td>不要把卖 API、租 GPU、做应用混成同一种商业模式。</td></tr>
+  <tr><td>Prompt Cache / KV Cache / 结果缓存</td><td>Prompt Cache 是复用输入上下文；KV Cache 是推理过程中的注意力缓存；结果缓存是复用相同请求的答案。</td><td>影响 token 成本、推理速度、显存占用和平台成本治理。</td><td>三种缓存作用不同，不能混为一谈。</td></tr>
+  <tr><td>向量数据库</td><td>存储文本、图片等内容的向量表示，用于相似度检索。</td><td>常用于企业知识库、RAG、语义搜索、推荐召回。</td><td>RAG 不等于只接一个大模型，还需要切分、向量化、检索、重排和权限。</td></tr>
+  <tr><td>对象存储 / 块存储 / 文件存储</td><td>对象存储适合模型文件和数据集；块存储适合云主机数据盘；文件存储适合多节点共享访问。</td><td>支撑模型权重、训练数据、日志、快照和备份。</td><td>训练、推理、备份、归档对存储性能要求不同。</td></tr>
+  <tr><td>负载均衡 / 反向代理</td><td>把请求分发到多个后端实例，提升并发和可用性。</td><td>常在 API 网关、推理服务、控制台服务前面使用。</td><td>高并发不是只加 GPU，还要设计请求分发、超时、重试和熔断。</td></tr>
+  <tr><td>消息队列 / 异步任务</td><td>把耗时任务放入队列，后台慢慢处理。</td><td>适合批量文档总结、训练任务、视频生成、离线评测。</td><td>不是所有 AI 请求都应该同步返回，长任务要异步化。</td></tr>
+  <tr><td>灰度发布 / 回滚</td><td>先让少量用户使用新模型或新服务，发现问题后可快速恢复旧版本。</td><td>用于模型升级、推理框架升级、平台功能发布。</td><td>模型效果变化也需要灰度，不能只看服务是否启动成功。</td></tr>
+  <tr><td>可观测性 Observability</td><td>通过指标、日志、链路追踪理解系统状态。</td><td>贯穿 API、模型服务、GPU节点、K8s、IDC、账单。</td><td>只有监控不够，还要能定位“哪一层出问题”。</td></tr>
+  <tr><td>容灾 / 备份 / 快照</td><td>容灾是故障时切换；备份是保存副本；快照是某一时间点状态。</td><td>保障模型服务、客户数据、云实例和私有化项目的可恢复性。</td><td>SLA 不能只承诺可用，还要说明数据恢复和责任边界。</td></tr>
+  <tr><td>FinOps / 成本治理</td><td>持续优化云资源、模型调用和GPU利用率，控制成本。</td><td>连接技术资源和经营指标。</td><td>AI平台很容易因为重试、长上下文、低利用率而亏损。</td></tr>
+  <tr><td>IAM / RBAC / 审计日志</td><td>IAM 管身份，RBAC 管角色权限，审计日志记录谁做了什么。</td><td>企业客户、私有化、政企项目都会关注。</td><td>没有权限和审计，企业很难放心采购和规模化使用。</td></tr>
+  <tr><td>LLMOps / 模型评测</td><td>管理模型版本、Prompt、评测集、效果对比、上线和回滚。</td><td>连接模型能力、产品质量和运营稳定性。</td><td>模型能回答不代表适合上线，还要评测、监控、复盘。</td></tr>
+  </tbody></table></div></div>
+
   <div class="note-table"><h4>最终一张判断表</h4><div class="table-scroll"><table><tbody><tr><td>客户要快速接入</td><td>优先考虑 API / Token / 聚合平台。</td></tr><tr><td>客户数据敏感</td><td>优先考虑私有化、本地部署、权限和审计。</td></tr><tr><td>客户要训练微调</td><td>优先考虑 GPU、存储、网络和训练环境。</td></tr><tr><td>客户要高并发服务</td><td>优先考虑专属推理实例、负载均衡和SLA。</td></tr><tr><td>客户要长期采购</td><td>优先考虑计费、合同、发票、工单和合规。</td></tr></tbody></table></div></div>
 </div></section>
-<section class="footer-note"><strong>使用建议：</strong>先按 Tab 从模块一看到模块七；遇到图表时横向滑动查看；不要急着背术语，重点理解每一层之间的连接关系。</section>
+<section class="footer-note"><strong>使用建议：</strong>建议按模块顺序阅读，并重点理解每一层之间的连接关系。</section>
 </main><a class="backtop" href="#top">回顶部</a>
 <script>
 const tabs=[...document.querySelectorAll('.tab-btn')];
