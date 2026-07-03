@@ -1,300 +1,345 @@
-<!-- AI 医疗智能体 · 架构与流程图 -->
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AI 医疗智能体 · 架构与流程</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5" />
+<title>AI基础设施七大模块扩充学习笔记｜手机适配完整版</title>
 <style>
-  :root{
-    --paper:#F6F7F5; --panel:#FFFFFF; --ink:#16302D; --muted:#5C6B68; --line:#DBE0DC;
-    --build:#3A5A8C; --build-bg:#EDF2F9; --build-line:#C6D5EA;
-    --core:#0E6E63;  --core-bg:#E4F1EE;  --core-line:#A6D5CD;
-    --app:#2E7D52;   --app-bg:#EAF4ED;   --app-line:#BFDEC8;
-    --flag:#BE3A2B;  --flag-bg:#FBEAE6;
-    --doc:#9C6712;   --doc-bg:#FAF0D9;
-    --disp:"Space Grotesk",system-ui,sans-serif;
-    --body:"Noto Sans SC","Space Grotesk",system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
-    --mono:"JetBrains Mono",ui-monospace,monospace;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0}
-  body{
-    background:var(--paper);
-    color:var(--ink);
-    font-family:var(--body);
-    line-height:1.5;
-    -webkit-font-smoothing:antialiased;
-    padding:40px 22px 60px;
-  }
-  .wrap{max-width:1060px;margin:0 auto}
-
-  /* ---------- header ---------- */
-  header{margin-bottom:34px;border-bottom:1px solid var(--line);padding-bottom:22px}
-  .eyebrow{
-    font-family:var(--mono);font-size:11px;letter-spacing:.28em;text-transform:uppercase;
-    color:var(--core);margin:0 0 14px;font-weight:600;
-  }
-  h1{
-    font-family:var(--body);font-weight:700;font-size:clamp(24px,4vw,38px);
-    margin:0 0 10px;letter-spacing:-.01em;line-height:1.15;
-  }
-  .sub{color:var(--muted);font-size:15px;max-width:62ch;margin:0}
-  .sub b{color:var(--ink);font-weight:500}
-
-  /* ---------- zone shell ---------- */
-  .zone{
-    background:var(--panel);border:1px solid var(--line);border-radius:18px;
-    padding:22px 22px 26px;position:relative;
-    box-shadow:0 1px 0 rgba(22,48,45,.03),0 14px 30px -22px rgba(22,48,45,.25);
-  }
-  .zone-head{display:flex;align-items:baseline;gap:12px;margin-bottom:20px;flex-wrap:wrap}
-  .ztag{
-    font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
-    padding:5px 11px;border-radius:999px;
-  }
-  .zname{font-weight:700;font-size:17px}
-  .zhint{color:var(--muted);font-size:13px;margin-left:auto}
-  .zone.build .ztag{background:var(--build-bg);color:var(--build)}
-  .zone.app .ztag{background:var(--app-bg);color:var(--app)}
-  .zone.build{border-top:3px solid var(--build)}
-  .zone.app{border-top:3px solid var(--app)}
-
-  /* ---------- node card ---------- */
-  .node{
-    background:#fff;border:1px solid var(--line);border-radius:13px;padding:13px 15px;
-    min-width:0;position:relative;transition:transform .18s ease,box-shadow .18s ease;
-  }
-  .node:hover{transform:translateY(-2px);box-shadow:0 10px 22px -16px rgba(22,48,45,.45)}
-  .node .idx{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--muted)}
-  .node .t{font-weight:500;font-size:14.5px;margin-top:3px;line-height:1.35}
-  .node .d{color:var(--muted);font-size:12px;margin-top:5px;line-height:1.4}
-  .node.accent-build{border-left:3px solid var(--build)}
-  .node.accent-app{border-left:3px solid var(--app)}
-
-  /* ---------- build pipeline (horizontal) ---------- */
-  .pipe{display:flex;align-items:stretch;gap:0;flex-wrap:wrap}
-  .pipe .node{flex:1 1 150px}
-  .chev{
-    flex:0 0 26px;align-self:center;display:flex;align-items:center;justify-content:center;
-    color:var(--build-line);font-size:18px;font-weight:700;
-  }
-  .chev::after{content:"›";font-family:var(--disp);color:var(--build);opacity:.55}
-  /* split group */
-  .split{flex:1 1 168px;display:flex;flex-direction:column;gap:8px;justify-content:center}
-  .chip{
-    font-family:var(--mono);font-size:11.5px;font-weight:500;padding:8px 11px;border-radius:9px;
-    background:var(--build-bg);color:var(--build);border:1px solid var(--build-line);
-  }
-  .chip .k{display:block;font-size:10px;letter-spacing:.06em;opacity:.7;margin-bottom:2px}
-
-  /* ---------- spine connector ---------- */
-  .spine{display:flex;flex-direction:column;align-items:center;gap:0;padding:6px 0}
-  .spine .seg{width:2px;height:16px;background:linear-gradient(var(--core-line),var(--core))}
-  .spine .lab{
-    font-family:var(--mono);font-size:11px;color:var(--core);font-weight:600;
-    background:var(--core-bg);border:1px solid var(--core-line);border-radius:999px;padding:4px 12px;
-  }
-  .spine .arrowhead{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--core)}
-
-  /* ---------- core plate (signature) ---------- */
-  .core{
-    background:
-      radial-gradient(120% 120% at 18% 0%, rgba(14,110,99,.10), transparent 60%),
-      var(--core-bg);
-    border:1px solid var(--core-line);border-radius:18px;padding:22px;position:relative;
-    box-shadow:0 18px 40px -28px rgba(14,110,99,.6);
-  }
-  .core .ztag{background:#fff;color:var(--core);border:1px solid var(--core-line)}
-  .core-grid{display:grid;grid-template-columns:1.1fr 1.3fr;gap:18px;align-items:stretch}
-  .kg{
-    background:#fff;border:1px solid var(--core-line);border-radius:14px;padding:18px;
-    display:flex;flex-direction:column;justify-content:center;gap:6px;position:relative;overflow:hidden;
-  }
-  .kg .glyph{display:flex;gap:6px;margin-bottom:6px}
-  .kg .dot{width:9px;height:9px;border-radius:50%;background:var(--core);opacity:.85}
-  .kg .dot:nth-child(2){opacity:.5;transform:translateY(6px)}
-  .kg .dot:nth-child(3){opacity:.7;transform:translateY(-3px)}
-  .kg .kg-t{font-weight:700;font-size:16px}
-  .kg .kg-d{color:var(--muted);font-size:12.5px}
-  .kg .kg-tag{font-family:var(--mono);font-size:10.5px;color:var(--core);margin-top:8px;letter-spacing:.04em}
-
-  .rules{display:flex;flex-direction:column;gap:9px}
-  .rule{
-    background:#fff;border:1px solid var(--core-line);border-radius:11px;padding:10px 13px;
-    display:flex;align-items:center;gap:10px;
-  }
-  .rule .badge{font-family:var(--mono);font-size:10px;font-weight:600;color:#fff;background:var(--core);border-radius:6px;padding:3px 7px;flex:0 0 auto}
-  .rule.flag .badge{background:var(--flag)}
-  .rule .rt{font-size:13.5px;font-weight:500}
-  .rule .rd{font-size:11.5px;color:var(--muted);margin-left:auto;font-family:var(--mono)}
-  .engine{
-    grid-column:1 / -1;background:var(--ink);color:#dfeae7;border-radius:12px;padding:13px 16px;
-    display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:13px;
-  }
-  .engine .ed{font-size:11px;color:#9fb6b1;margin-left:auto;letter-spacing:.04em}
-  .engine .pulse{width:8px;height:8px;border-radius:50%;background:#46d6a0;box-shadow:0 0 0 0 rgba(70,214,160,.6);animation:p 2.4s infinite}
-  @keyframes p{0%{box-shadow:0 0 0 0 rgba(70,214,160,.55)}70%{box-shadow:0 0 0 10px rgba(70,214,160,0)}100%{box-shadow:0 0 0 0 rgba(70,214,160,0)}}
-
-  /* ---------- app journey (vertical) ---------- */
-  .journey{display:flex;flex-direction:column;gap:0}
-  .row{display:flex;align-items:stretch;gap:14px}
-  .row .main{flex:1 1 auto}
-  .row .side{flex:0 0 230px;display:flex;align-items:center}
-  .vchev{display:flex;justify-content:flex-start;padding-left:26px;height:18px;align-items:center}
-  .vchev::before{content:"";width:2px;height:18px;background:var(--app-line)}
-  .vchev .a{margin-left:-1px;width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid var(--app);align-self:flex-end;margin-bottom:0}
-  .branch{
-    border:1px dashed;border-radius:11px;padding:11px 13px;font-size:13px;width:100%;
-    display:flex;flex-direction:column;gap:3px;
-  }
-  .branch .bt{font-weight:600;font-size:12.5px}
-  .branch .bd{font-size:11.5px}
-  .branch.flag{border-color:var(--flag);background:var(--flag-bg);color:var(--flag)}
-  .branch.doc{border-color:var(--doc);background:var(--doc-bg);color:var(--doc)}
-  .branch.loop{border-color:var(--app-line);background:var(--app-bg);color:var(--app)}
-  .connector-label{font-family:var(--mono);font-size:10.5px;color:var(--muted);padding:0 0 0 8px;align-self:center}
-
-  /* ---------- legend ---------- */
-  .legend{display:flex;flex-wrap:wrap;gap:18px;margin-top:24px;padding-top:18px;border-top:1px solid var(--line)}
-  .leg{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted)}
-  .leg .sw{width:13px;height:13px;border-radius:4px;border:1px solid rgba(0,0,0,.08)}
-  .sw.build{background:var(--build)} .sw.core{background:var(--core)} .sw.app{background:var(--app)}
-  .sw.flag{background:var(--flag)} .sw.doc{background:var(--doc)}
-
-  footer{margin-top:26px;color:var(--muted);font-size:12px;font-family:var(--mono);letter-spacing:.02em}
-
-  /* ---------- entrance ---------- */
-  .reveal{opacity:0;transform:translateY(10px);animation:rise .6s cubic-bezier(.2,.7,.2,1) forwards}
-  @keyframes rise{to{opacity:1;transform:none}}
-  .d1{animation-delay:.05s}.d2{animation-delay:.13s}.d3{animation-delay:.21s}.d4{animation-delay:.29s}.d5{animation-delay:.37s}
-
-  @media (max-width:760px){
-    .core-grid{grid-template-columns:1fr}
-    .row{flex-direction:column;gap:8px}
-    .row .side{flex:1 1 auto}
-    .pipe .node{flex:1 1 100%}
-    .chev{transform:rotate(90deg);flex-basis:100%;height:18px}
-    .split{flex:1 1 100%}
-    .zhint{margin-left:0;flex-basis:100%}
-  }
-  @media (prefers-reduced-motion:reduce){
-    .reveal{animation:none;opacity:1;transform:none}
-    .engine .pulse{animation:none}
-    .node{transition:none}
-  }
+:root{--bg:#061020;--panel:rgba(255,255,255,.08);--panel2:rgba(255,255,255,.12);--line:rgba(255,255,255,.14);--text:#eef6ff;--muted:#a8b8d3;--weak:#7f90ad;--cyan:#38d9ff;--purple:#aa78ff;--green:#4be1a5;--orange:#ffb45f;--red:#ff6578;--radius:20px;}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;color:var(--text);background:radial-gradient(circle at 15% 6%,rgba(56,217,255,.22),transparent 30%),radial-gradient(circle at 88% 8%,rgba(170,120,255,.22),transparent 32%),linear-gradient(180deg,#050914,#0a1630 48%,#050914);line-height:1.72}a{color:inherit}.top{position:sticky;top:0;z-index:30;background:rgba(5,9,20,.88);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}.top-inner{max-width:1180px;margin:0 auto;padding:12px 14px}.brand{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px}.brand h1{font-size:18px;margin:0;letter-spacing:-.2px}.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}.badge{font-size:11px;padding:5px 9px;border-radius:999px;background:rgba(75,225,165,.12);border:1px solid rgba(75,225,165,.25);color:#c9ffe8;white-space:nowrap}.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}.tab-btn{flex:0 0 auto;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--muted);border-radius:999px;padding:9px 12px;font-weight:700;font-size:13px}.tab-btn span{display:inline-grid;place-items:center;width:20px;height:20px;margin-right:6px;border-radius:50%;background:rgba(255,255,255,.1);font-size:11px}.tab-btn.active{color:#061020;background:linear-gradient(135deg,var(--cyan),var(--green));border-color:transparent}.shell{max-width:1180px;margin:0 auto;padding:18px 14px 70px}.intro{padding:20px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(135deg,rgba(56,217,255,.11),rgba(170,120,255,.10));margin-bottom:16px}.intro h2{font-size:28px;line-height:1.16;margin:0 0 10px}.intro p{margin:0;color:var(--muted)}.module{display:none;animation:fade .25s ease}.module.active{display:block}@keyframes fade{from{opacity:.3;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}.module-hero{padding:20px;border:1px solid var(--line);border-radius:24px;background:rgba(255,255,255,.075);margin-bottom:14px}.kicker{display:inline-block;font-size:12px;color:#c9f7ff;border:1px solid rgba(56,217,255,.24);background:rgba(56,217,255,.09);border-radius:999px;padding:5px 10px;margin-bottom:10px}.module h2{font-size:30px;line-height:1.15;margin:0 0 8px;letter-spacing:-.4px}.subtitle{margin:0 0 12px;color:#dcecff;font-weight:700}.module-overview{color:var(--muted);background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:14px}.diagram-wrap{border:1px solid var(--line);border-radius:22px;overflow:auto;background:rgba(0,0,0,.24);margin:14px 0}.diagram-wrap svg{min-width:820px;width:100%;height:auto;display:block}.mobile-toc details{border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.06);padding:12px 14px;margin:14px 0}.mobile-toc summary{cursor:pointer;font-weight:800}.mobile-toc a{color:#c9f7ff;text-decoration:none}.content-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.section-card,.note-table{border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.07);padding:17px}.section-card h3,.note-table h4{margin:0 0 10px;font-size:18px;line-height:1.35}.section-card p{margin:0;color:var(--muted);font-size:15px}.section-card b{color:#fff}.note-table{margin-top:14px}.table-scroll{overflow-x:auto;border-radius:14px;border:1px solid rgba(255,255,255,.1)}table{border-collapse:collapse;width:100%;min-width:620px;background:rgba(0,0,0,.16)}td,th{padding:12px;border-bottom:1px solid rgba(255,255,255,.1);vertical-align:top;color:var(--muted);font-size:14px}td:first-child{color:#fff;font-weight:800;width:180px}tr:last-child td{border-bottom:0}.footer-note{margin-top:20px;padding:18px;border-radius:22px;background:rgba(75,225,165,.08);border:1px solid rgba(75,225,165,.2);color:var(--muted)}.footer-note strong{color:#fff}.backtop{position:fixed;right:14px;bottom:16px;z-index:20;border:1px solid var(--line);background:rgba(5,9,20,.84);color:#fff;border-radius:999px;padding:10px 12px;text-decoration:none;font-size:13px}
+@media(max-width:760px){.top-inner{padding:10px}.brand h1{font-size:16px}.badge{display:none}.tab-btn{font-size:12px;padding:8px 10px}.shell{padding:14px 10px 70px}.intro h2{font-size:24px}.module h2{font-size:25px}.content-grid{grid-template-columns:1fr}.section-card{padding:15px;border-radius:18px}.section-card p{font-size:14px}.diagram-wrap svg{min-width:720px}.module-hero{padding:16px}}
+@media(min-width:1100px){.section-card p{font-size:15.5px}}
 </style>
-
-<div class="wrap">
-
-  <header class="reveal d1">
-    <p class="eyebrow">Clinical AI Agent · Architecture &amp; Flow</p>
-    <h1> AI 智能体</h1>
-  </header>
-
-  <!-- ============ BUILD SIDE ============ -->
-  <section class="zone build reveal d2">
-    <div class="zone-head">
-      <span class="ztag">Build · 离线</span>
-      <span class="zname">构建侧</span>
-    </div>
-    <div class="pipe">
-      <div class="node accent-build"><span class="idx">01</span><div class="t">医学知识采集</div><div class="d">按疾病名 + 来源配置抓取指南/文献</div></div>
-      <div class="chev"></div>
-      <div class="node accent-build"><span class="idx">02</span><div class="t">文档解析</div><div class="d">识别正文、表格，<b>尤其决策树/流程图</b></div></div>
-      <div class="chev"></div>
-      <div class="node accent-build"><span class="idx">03</span><div class="t">结构化切分</div><div class="d">决策树·表格整体保留，不被切断</div></div>
-      <div class="chev"></div>
-      <div class="node accent-build"><span class="idx">04</span><div class="t">语义理解与抽取</div><div class="d">两路并行 →</div></div>
-      <div class="chev"></div>
-      <div class="split">
-        <div class="chip"><span class="k">实体/关系</span>元素子图</div>
-        <div class="chip"><span class="k">流程/阈值/问诊</span>规则子图</div>
+</head>
+<body>
+<header class="top" id="top"><div class="top-inner"><div class="brand"><div><h1>AI基础设施七大模块扩充学习笔记</h1><p>手机适配完整版｜不写学习计划，重点补充概念解释、场景、关系和注意点</p></div><div class="badge">Expanded Notes</div></div><div class="tabs"><button class="tab-btn active" data-target="api-token-platform"><span>1</span>API / Token</button><button class="tab-btn" data-target="inference-deploy"><span>2</span>模型部署</button><button class="tab-btn" data-target="gpu-resource"><span>3</span>GPU算力</button><button class="tab-btn" data-target="cluster-cloud"><span>4</span>集群调度</button><button class="tab-btn" data-target="idc-ops"><span>5</span>IDC机房</button><button class="tab-btn" data-target="billing-operation"><span>6</span>运营合规</button><button class="tab-btn" data-target="full-review"><span>7</span>综合复盘</button></div></div></header>
+<main class="shell">
+    <section class="module" id="api-token-platform" data-module="1">
+      <div class="module-hero">
+        <div class="kicker">Module 01</div>
+        <h2>模块一：API / Token / 聚合平台</h2>
+        <p class="subtitle">先从客户最容易感知的“调用入口、计量方式、统一平台”开始。</p>
+        <div class="module-overview">这一模块解决一个最基础的问题：客户到底怎么使用大模型？平台怎么知道谁在用、用了多少、该扣多少钱、调用失败怎么办、多个模型怎么统一管理。你可以把它理解成 AI 基础设施的“门面 + 收银台 + 调度台”。</div>
       </div>
-      <div class="chev"></div>
-      <div class="node accent-build"><span class="idx">05</span><div class="t">图谱构建 + 规则工程化</div><div class="d">可执行化 · 一致性校验 · 评测集 · <b>专家校验</b></div></div>
-    </div>
-  </section>
-
-  <div class="spine reveal d2">
-    <span class="lab">构建产物入图谱</span>
-    <span class="seg"></span><span class="arrowhead"></span>
-  </div>
-
-  <!-- ============ CORE ============ -->
-  <section class="core reveal d3">
-    <div class="zone-head">
-      <span class="ztag">Core · 衔接枢纽</span>
-      <span class="zname">统一知识图谱 + 推理引擎</span>
-      <span class="zhint" style="color:var(--core)">规则逻辑在图谱里，执行靠引擎</span>
-    </div>
-    <div class="core-grid">
-      <div class="kg">
-        <div class="glyph"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
-        <div class="kg-t">统一知识图谱</div>
-        <div class="kg-d">元素子图 + 规则子图，规则节点引用元素节点</div>
-        <div class="kg-tag">可检索 · 可执行 · 可溯源（来源/版本/证据等级）</div>
+      <div class="diagram-wrap"><svg viewBox="0 0 1100 330" xmlns="http://www.w3.org/2000/svg"><defs><marker id="arr" markerWidth="12" markerHeight="12" refX="9" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#aeefff"/></marker></defs><rect width="1100" height="330" rx="24" fill="#061020"/><text x="36" y="52" fill="#fff" font-size="25" font-weight="800">API调用链路</text><text x="36" y="80" fill="#9fb0cc" font-size="14">按箭头理解每个模块之间的先后关系，不要把概念孤立记忆。</text><rect x="40.0" y="140" width="128.6" height="88" rx="18" fill="rgba(56,217,255,.12)" stroke="rgba(56,217,255,.38)"/><text x="104.3" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">客户应用</text><text x="104.3" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">身份凭证</text><line x1="168.6" y1="184" x2="184.6" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="188.6" y="140" width="128.6" height="88" rx="18" fill="rgba(170,120,255,.12)" stroke="rgba(170,120,255,.38)"/><text x="252.9" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">API Key</text><text x="252.9" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">身份凭证</text><line x1="317.1" y1="184" x2="333.1" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="337.1" y="140" width="128.6" height="88" rx="18" fill="rgba(75,225,165,.12)" stroke="rgba(75,225,165,.38)"/><text x="401.4" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">统一网关</text><text x="401.4" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">鉴权限流</text><line x1="465.7" y1="184" x2="481.7" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="485.7" y="140" width="128.6" height="88" rx="18" fill="rgba(255,180,95,.12)" stroke="rgba(255,180,95,.38)"/><text x="550.0" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">Token计量</text><text x="550.0" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">输入输出</text><line x1="614.3" y1="184" x2="630.3" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="634.3" y="140" width="128.6" height="88" rx="18" fill="rgba(255,101,120,.12)" stroke="rgba(255,101,120,.38)"/><text x="698.6" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">模型路由</text><text x="698.6" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">选择模型</text><line x1="762.9" y1="184" x2="778.9" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="782.9" y="140" width="128.6" height="88" rx="18" fill="rgba(110,141,255,.12)" stroke="rgba(110,141,255,.38)"/><text x="847.1" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">模型服务</text><text x="847.1" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">返回结果</text><line x1="911.4" y1="184" x2="927.4" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="931.4" y="140" width="128.6" height="88" rx="18" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.38)"/><text x="995.7" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">扣费日志</text><text x="995.7" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">账单审计</text><text x="44" y="285" fill="#9fb0cc" font-size="14">这条链路可以作为本模块的最小记忆图。</text></svg></div>
+      <div class="mobile-toc"><details><summary>本模块目录</summary><ol><li><a href="#api-token-platform-1">1. 三个核心概念先分清</a></li><li><a href="#api-token-platform-2">2. 一次 API 请求里面有什么</a></li><li><a href="#api-token-platform-3">3. API Key 为什么重要</a></li><li><a href="#api-token-platform-4">4. Token 成本到底怎么产生</a></li><li><a href="#api-token-platform-5">5. 聚合平台解决什么问题</a></li><li><a href="#api-token-platform-6">6. 模型路由是平台的核心能力</a></li><li><a href="#api-token-platform-7">7. 你需要盯住的指标</a></li><li><a href="#api-token-platform-8">8. 常见误区</a></li></ol></details></div>
+      <div class="content-grid">
+        <article class="section-card" id="api-token-platform-1"><h3>1. 三个核心概念先分清</h3><p>
+<b>API</b> 是客户调用模型能力的入口。客户的系统不会每次打开网页聊天，而是通过 API 把问题发给模型，然后拿回结果。<br>
+<b>Token</b> 是模型处理文本时的计量单位。输入内容、系统提示词、历史上下文、知识库片段、模型输出都会产生 token。<br>
+<b>聚合平台</b> 是统一管理多个模型、多个客户、多个 API Key、多个账单、多个权限和多个风控规则的平台。<br><br>
+通俗类比：API 像餐厅点餐窗口；Token 像水表电表；聚合平台像商场服务台 + 收银系统 + 调度系统。</p></article><article class="section-card" id="api-token-platform-2"><h3>2. 一次 API 请求里面有什么</h3><p>
+一次 API 请求通常包含：请求地址、API Key、模型名称、用户输入、系统提示词、历史消息、参数设置、是否流式输出等。平台收到请求后，会先判断“你是谁”“有没有权限”“余额够不够”“调用是否超限”，再决定调用哪个模型。<br><br>
+常见参数包括：temperature 控制回答随机性，max_tokens 控制最大输出长度，stream 控制是否流式返回，tools 控制是否允许模型调用工具。</p></article><article class="section-card" id="api-token-platform-3"><h3>3. API Key 为什么重要</h3><p>
+API Key 是调用凭证。它不只是一个字符串，而是客户身份、项目权限、额度限制、日志审计和风险控制的入口。<br><br>
+一个成熟平台应该支持：创建 Key、删除 Key、限制 Key 可调用模型、限制 Key 每日额度、绑定 IP 白名单、查看 Key 调用日志、检测异常调用。<br><br>
+注意点：API Key 泄露会造成真实费用损失，所以企业客户很关心 Key 权限、预算上限和审计日志。</p></article><article class="section-card" id="api-token-platform-4"><h3>4. Token 成本到底怎么产生</h3><p>
+Token 成本不是只看用户问了几个字。一次请求的输入 token 包括：系统提示词、用户问题、历史上下文、知识库检索内容、工具调用结果。输出 token 是模型生成的答案。<br><br>
+为什么长文档贵？因为文档全文进入上下文，会产生大量 input token。为什么 Agent 贵？因为 Agent 往往要多次调用模型，每一步都可能累积上下文和工具结果。为什么知识库也贵？因为检索出来的资料会被塞回模型上下文。</p></article><article class="section-card" id="api-token-platform-5"><h3>5. 聚合平台解决什么问题</h3><p>
+如果客户自己分别接 OpenAI、Claude、Gemini、DeepSeek、通义、智谱等模型，会遇到接口不统一、价格不统一、Key 分散、日志分散、账单分散、故障无法自动切换的问题。<br><br>
+聚合平台把这些能力统一起来：统一 API、统一鉴权、统一计费、统一日志、统一模型路由、统一限流、统一内容安全、统一成本看板。客户只接你的平台，不需要关心背后用了哪个模型。</p></article><article class="section-card" id="api-token-platform-6"><h3>6. 模型路由是平台的核心能力</h3><p>
+模型路由不是简单转发请求，而是根据场景、成本、速度、质量和稳定性选择模型。<br><br>
+普通问答可以走低成本模型；复杂推理走强模型；代码任务走代码模型；长文档走长上下文模型；图片任务走多模态模型；某个供应商失败时自动切换备用模型。<br><br>
+平台价值会从“模型多”升级为“帮客户在效果、成本、速度、稳定性之间做选择”。</p></article><article class="section-card" id="api-token-platform-7"><h3>7. 你需要盯住的指标</h3><p>
+API 平台的关键指标包括：input tokens、output tokens、total tokens、RPM、TPM、QPS、TTFT、Latency、Error Rate、Timeout Rate、Cost per Request、Revenue per Request、Gross Margin、Fallback Rate。<br><br>
+产品视角看：客户体验主要看延迟和成功率；经营视角看单次请求成本和毛利；运维视角看错误率、超时率和备用模型切换比例。</p></article><article class="section-card" id="api-token-platform-8"><h3>8. 常见误区</h3><p>
+误区一：以为卖 token 就是倒卖官方 token。更准确地说，是提供可计费、可管理、可风控的 AI 能力服务。<br>
+误区二：以为接几个模型 API 就是聚合平台。真正的平台还要有账户、权限、日志、账单、限流、风控、路由、成本看板。<br>
+误区三：只看模型价格，不看重试、日志、工具调用、内容审核、客服和运维成本。</p></article>
       </div>
-      <div class="rules">
-        <div class="rule"><span class="badge">STR</span><span class="rt">风险分层规则</span><span class="rd">决策树 / 评分</span></div>
-        <div class="rule"><span class="badge">ASK</span><span class="rt">预问诊规则</span><span class="rd">分支问诊流</span></div>
-        <div class="rule"><span class="badge">MNG</span><span class="rt">管理路径规则</span><span class="rd">状态机+决策表+模板</span></div>
+      <div class="note-table"><h4>API平台核心模块</h4><div class="table-scroll"><table><tbody><tr><td>用户系统</td><td>管理客户、企业、项目和成员</td></tr><tr><td>API Key</td><td>控制身份、权限、额度和审计</td></tr><tr><td>模型接入</td><td>连接不同模型供应商和私有模型</td></tr><tr><td>Token统计</td><td>计算输入输出和上下文用量</td></tr><tr><td>模型路由</td><td>按场景、成本、质量和稳定性选择模型</td></tr><tr><td>账单系统</td><td>把用量转成费用和对账明细</td></tr></tbody></table></div></div><div class="note-table"><h4>请求链路</h4><div class="table-scroll"><table><tbody><tr><td>1</td><td>客户应用发起请求</td></tr><tr><td>2</td><td>携带API Key进入网关</td></tr><tr><td>3</td><td>鉴权、限流、余额检查</td></tr><tr><td>4</td><td>计算输入token并选择模型</td></tr><tr><td>5</td><td>调用模型并返回结果</td></tr><tr><td>6</td><td>计算输出token、扣费、写日志</td></tr></tbody></table></div></div>
+    
+<div class="supplement">
+  <article class="section-card"><h3>9. 基础补充：API 平台到底像什么</h3><p>你可以把 API 平台想成“高速公路收费站”。每辆车进入高速时要识别车牌，这就是 API Key；要判断能不能上高速，这就是权限；要知道开了多少公里，这就是 token 计量；要根据拥堵情况选择路线，这就是模型路由；最后要扣费和生成账单，这就是计费系统。</p></article>
+  <article class="section-card"><h3>10. 平台为什么必须有日志</h3><p>日志不是给技术人员看的流水账，而是客户信任的证据。客户会问：哪个部门用了多少钱？哪个 API Key 调用了哪些模型？哪次调用失败了？为什么扣了这么多？没有日志，就无法解释账单，也无法追责和排查故障。</p></article>
+  <article class="section-card"><h3>11. Token 预算怎么设计</h3><p>企业平台要支持按企业、项目、成员、API Key 设置预算。比如企业每月 10 万元，研发部门 4 万，客服部门 3 万，市场部门 2 万，测试项目 1 万。预算不是财务功能，而是防止成本失控的核心产品能力。</p></article>
+  <article class="section-card"><h3>12. 聚合平台 MVP 最小闭环</h3><p>最小闭环不是“接入很多模型”，而是：客户能开户、能创建 API Key、能调用模型、能统计 token、能扣费、能查日志、能看账单、能限制额度、能在失败时返回明确错误。先把这条链跑通，再做更复杂的模型路由。</p></article>
+  <article class="section-card"><h3>13. 你以后看 API 产品要看什么</h3><p>看文档是否清晰、SDK 是否完善、错误码是否完整、是否支持流式输出、是否有速率限制说明、是否能导出账单、是否有企业权限、是否有安全策略、是否有模型降级和备用方案。</p></article>
+  <div class="note-table"><h4>API 平台常见角色</h4><div class="table-scroll"><table><tbody><tr><td>开发者</td><td>关心接口好不好接、延迟低不低、错误码清不清楚。</td></tr><tr><td>企业管理员</td><td>关心成员权限、预算、账单、审计和风险控制。</td></tr><tr><td>财务</td><td>关心充值、发票、对账、部门分摊和合同。</td></tr><tr><td>运维</td><td>关心成功率、延迟、故障、告警和备用模型。</td></tr><tr><td>平台经营者</td><td>关心成本、毛利、模型调用占比和客户留存。</td></tr></tbody></table></div></div>
+</div></section>
+    <section class="module" id="inference-deploy" data-module="2">
+      <div class="module-hero">
+        <div class="kicker">Module 02</div>
+        <h2>模块二：模型部署与推理服务</h2>
+        <p class="subtitle">理解开源模型如何真正跑起来，并变成可调用的服务。</p>
+        <div class="module-overview">这一模块解决“模型如何从权重文件变成稳定 API 服务”的问题。模型不是下载下来就能给客户用，中间需要推理框架、GPU、显存、容器环境、并发优化、监控告警和网关接入。</div>
       </div>
-      <div class="engine">
-        <span class="pulse"></span>
-        <span>推理编排引擎</span>
-        <span class="ed">规则引擎 · 状态机 · 推理器　|　LLM 只做：理解输入 + 生成表达</span>
+      <div class="diagram-wrap"><svg viewBox="0 0 1100 330" xmlns="http://www.w3.org/2000/svg"><defs><marker id="arr" markerWidth="12" markerHeight="12" refX="9" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#aeefff"/></marker></defs><rect width="1100" height="330" rx="24" fill="#061020"/><text x="36" y="52" fill="#fff" font-size="25" font-weight="800">模型部署链路</text><text x="36" y="80" fill="#9fb0cc" font-size="14">按箭头理解每个模块之间的先后关系，不要把概念孤立记忆。</text><rect x="40.0" y="140" width="153.3" height="88" rx="18" fill="rgba(56,217,255,.12)" stroke="rgba(56,217,255,.38)"/><text x="116.7" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">模型权重</text><text x="116.7" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">参数文件</text><line x1="193.3" y1="184" x2="209.3" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="213.3" y="140" width="153.3" height="88" rx="18" fill="rgba(170,120,255,.12)" stroke="rgba(170,120,255,.38)"/><text x="290.0" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">GPU显存</text><text x="290.0" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">参数文件</text><line x1="366.7" y1="184" x2="382.7" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="386.7" y="140" width="153.3" height="88" rx="18" fill="rgba(75,225,165,.12)" stroke="rgba(75,225,165,.38)"/><text x="463.3" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">推理框架</text><text x="463.3" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">运行空间</text><line x1="540.0" y1="184" x2="556.0" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="560.0" y="140" width="153.3" height="88" rx="18" fill="rgba(255,180,95,.12)" stroke="rgba(255,180,95,.38)"/><text x="636.7" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">容器环境</text><text x="636.7" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">vLLM等</text><line x1="713.3" y1="184" x2="729.3" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="733.3" y="140" width="153.3" height="88" rx="18" fill="rgba(255,101,120,.12)" stroke="rgba(255,101,120,.38)"/><text x="810.0" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">模型API</text><text x="810.0" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">Docker镜像</text><line x1="886.7" y1="184" x2="902.7" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="906.7" y="140" width="153.3" height="88" rx="18" fill="rgba(110,141,255,.12)" stroke="rgba(110,141,255,.38)"/><text x="983.3" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">接入网关</text><text x="983.3" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">HTTP服务</text><text x="44" y="285" fill="#9fb0cc" font-size="14">这条链路可以作为本模块的最小记忆图。</text></svg></div>
+      <div class="mobile-toc"><details><summary>本模块目录</summary><ol><li><a href="#inference-deploy-1">1. 训练、微调、推理不要混在一起</a></li><li><a href="#inference-deploy-2">2. 模型权重是什么</a></li><li><a href="#inference-deploy-3">3. 推理框架的作用</a></li><li><a href="#inference-deploy-4">4. KV Cache 为什么重要</a></li><li><a href="#inference-deploy-5">5. 量化是什么</a></li><li><a href="#inference-deploy-6">6. 标准部署链路</a></li><li><a href="#inference-deploy-7">7. 推理服务关键指标</a></li><li><a href="#inference-deploy-8">8. 常见故障</a></li></ol></details></div>
+      <div class="content-grid">
+        <article class="section-card" id="inference-deploy-1"><h3>1. 训练、微调、推理不要混在一起</h3><p>
+训练是从大量数据中学习模型参数，资源消耗最大。微调是在已有模型基础上用行业数据适配特定任务。推理是模型根据用户输入生成答案。<br><br>
+AI 基础设施商业化里，最常遇到的是推理服务：客户已经有模型或选择开源模型，希望你把它部署成稳定、可访问、可计费的 API。</p></article><article class="section-card" id="inference-deploy-2"><h3>2. 模型权重是什么</h3><p>
+模型权重可以理解为模型的大脑参数。开源模型通常会发布权重文件，部署模型就是把这些权重加载到 GPU 显存中，再由推理框架运行。<br><br>
+模型越大，权重占用显存越多。上下文越长，KV Cache 占用越高。并发越高，同时存在的缓存和请求越多，显存压力越大。</p></article><article class="section-card" id="inference-deploy-3"><h3>3. 推理框架的作用</h3><p>
+推理框架负责把模型权重变成可访问服务。它要做模型加载、请求排队、batch 合并、KV Cache 管理、显存优化、流式输出、API 暴露。<br><br>
+常见工具包括 vLLM、TensorRT-LLM、TGI、Ollama。学习阶段可以先理解 vLLM：它适合高吞吐 LLM 服务，并且常见于私有模型 API 部署。</p></article><article class="section-card" id="inference-deploy-4"><h3>4. KV Cache 为什么重要</h3><p>
+大模型生成文本时，会保存前面 token 的 key/value 信息，避免每次都重新计算，这就是 KV Cache。它能提升生成效率，但会消耗显存。<br><br>
+长上下文、多轮对话、高并发都会增加 KV Cache 压力。很多推理服务成本和容量规划，核心就是在管理 KV Cache。</p></article><article class="section-card" id="inference-deploy-5"><h3>5. 量化是什么</h3><p>
+量化是降低模型数值精度，从而减少显存占用和计算成本。例如从更高精度压到 8bit 或 4bit。<br><br>
+优点：可以让更大模型跑在更小显存上，降低成本。风险：可能影响效果、稳定性或某些复杂任务表现。产品上不能只说“能跑”，还要评估“效果是否能接受”。</p></article><article class="section-card" id="inference-deploy-6"><h3>6. 标准部署链路</h3><p>
+选择模型 → 获取权重 → 准备 CUDA / Python / 依赖环境 → 选择 GPU 服务器 → 选择推理框架 → 启动模型服务 → 暴露 API → 接入聚合平台 → 接入日志、计量、监控、告警。<br><br>
+这条链路说明：模型部署不是算法问题，而是模型、系统、硬件、网络和运维共同作用的工程问题。</p></article><article class="section-card" id="inference-deploy-7"><h3>7. 推理服务关键指标</h3><p>
+TTFT 是首 token 延迟，决定用户多久看到第一个字。TPOT 是每个输出 token 的生成速度。Latency 是总延迟。Throughput 是单位时间处理能力。QPS 是每秒请求数。GPU Utilization 代表 GPU 利用率。VRAM Usage 代表显存占用。<br><br>
+用户体验看 TTFT 和 Latency；平台经营看 Throughput 和 GPU 利用率；运维稳定看错误率、超时率、OOM。</p></article><article class="section-card" id="inference-deploy-8"><h3>8. 常见故障</h3><p>
+OOM：模型太大、上下文太长或并发太高。响应慢：请求排队、GPU 利用率高、batch 不合理。服务超时：输出太长、实例不足、网关超时设置短。环境跑不通：CUDA、驱动、Python 包版本冲突。成本过高：模型过大、利用率低、缺少路由和缓存策略。</p></article>
       </div>
-    </div>
-  </section>
-
-  <div class="spine reveal d3">
-    <span class="lab">引擎驱动应用侧</span>
-    <span class="seg"></span><span class="arrowhead"></span>
-  </div>
-
-  <!-- ============ APP SIDE ============ -->
-  <section class="zone app reveal d4">
-    <div class="zone-head">
-      <span class="ztag">Run · 在线</span>
-      <span class="zname">应用侧</span>
-      <span class="zhint">每位患者实时运行 · 全程留痕可审计</span>
-    </div>
-
-    <div class="journey">
-      <div class="row"><div class="main node accent-app"><div class="t">患者基础信息</div><div class="d">家族/遗传史 · 现有疾病 · 当前症状 · 生活方式</div></div></div>
-      <div class="vchev"><span class="a"></span></div>
-
-      <div class="row">
-        <div class="main node accent-app"><span class="idx">06</span><div class="t">预问诊交互</div><div class="d"></div></div>
-        <div class="side"><div class="branch loop"><span class="bt">信息不足 ↺ 追问</span><span class="bd">补齐专项评估所需元素</span></div></div>
+      <div class="note-table"><h4>部署组件</h4><div class="table-scroll"><table><tbody><tr><td>模型权重</td><td>模型参数文件，是模型能力的基础</td></tr><tr><td>推理框架</td><td>让模型高效运行并暴露API</td></tr><tr><td>GPU显存</td><td>承载模型权重和KV Cache</td></tr><tr><td>容器镜像</td><td>标准化运行环境</td></tr><tr><td>网关接入</td><td>让模型进入统一API平台</td></tr><tr><td>监控告警</td><td>保障稳定性和可运维</td></tr></tbody></table></div></div>
+    
+<div class="supplement">
+  <article class="section-card"><h3>9. 基础补充：部署模型和调用模型的区别</h3><p>调用模型是“别人已经把模型部署好了，你通过 API 使用”。部署模型是“你自己准备服务器、GPU、环境、模型文件和推理框架，把它变成可调用服务”。前者更像使用网约车，后者更像自己买车、保养、雇司机、做调度。</p></article>
+  <article class="section-card"><h3>10. 为什么推理服务要接入网关</h3><p>单独启动一个模型 API 只能说明模型能回答问题，但不能说明它能商业化。接入网关后，才能统一 API Key、权限、限流、token 统计、日志、账单、内容安全和 SLA。没有网关，模型服务只是技术 demo。</p></article>
+  <article class="section-card"><h3>11. 私有化部署最容易漏什么</h3><p>很多人只关注“模型能不能跑”，但私有化更容易漏：显卡驱动版本、CUDA版本、内网离线安装、模型权重存放、日志脱敏、客户权限、备份策略、升级方案、故障响应、硬件备件、验收标准。</p></article>
+  <article class="section-card"><h3>12. 推理成本优化思路</h3><p>优化推理成本通常有几类：选择更小模型、量化模型、限制上下文长度、优化 prompt、做缓存、批处理、模型路由、冷热实例分层、提高 GPU 利用率、把高峰和低谷任务错峰。</p></article>
+  <article class="section-card"><h3>13. 什么时候不建议自部署</h3><p>如果客户调用量很低、没有数据敏感要求、没有专属低延迟要求、也没有运维能力，自部署可能比直接调用成熟模型 API 更贵。自部署的价值通常来自数据安全、成本规模化、模型可控、专属性能或合规要求。</p></article>
+  <div class="note-table"><h4>推理服务验收清单</h4><div class="table-scroll"><table><tbody><tr><td>功能</td><td>模型是否能按预期回答，是否支持流式输出和工具调用。</td></tr><tr><td>性能</td><td>TTFT、总延迟、QPS、并发、吞吐是否达到要求。</td></tr><tr><td>稳定性</td><td>长时间运行是否崩溃，OOM、超时、重启频率如何。</td></tr><tr><td>安全</td><td>权限、日志、数据隔离、内网访问是否满足客户要求。</td></tr><tr><td>运维</td><td>是否有监控、告警、备份、升级和故障响应机制。</td></tr></tbody></table></div></div>
+</div></section>
+    <section class="module" id="gpu-resource" data-module="3">
+      <div class="module-hero">
+        <div class="kicker">Module 03</div>
+        <h2>模块三：GPU 服务器与算力资源</h2>
+        <p class="subtitle">理解模型运行需要什么硬件，以及算力如何出租。</p>
+        <div class="module-overview">这一模块解决“AI 模型到底需要什么硬件资源”的问题。GPU 服务器不是普通服务器，核心指标是 GPU 型号、显存、数量、互联、CPU、内存、存储、网络、电力和散热。</div>
       </div>
-      <div class="vchev"><span class="a"></span></div>
-
-      <div class="row"><div class="main node accent-app"><span class="idx">07</span><div class="t">风险评估与分层</div><div class="d">分层规则 + 图谱 → 高/中/低 + 危险因素清单</div></div></div>
-      <div class="vchev"><span class="a"></span></div>
-
-      <div class="row"><div class="main node accent-app"><span class="idx">08</span><div class="t">阶段判断与路径决策</div><div class="d">状态机定位：危险因素→早期→筛查→诊断→治疗→管理</div></div></div>
-      <div class="vchev"><span class="a"></span></div>
-
-      <div class="row"><div class="main node accent-app"><span class="idx">09</span><div class="t">管理方案生成</div><div class="d">三段式：结论 + 依据（可溯源）+ 下一步</div></div></div>
-      <div class="vchev"><span class="a"></span></div>
-
-      <div class="row">
-        <div class="main node accent-app"><span class="idx">10</span><div class="t">随访 · 依从性 · 闭环</div><div class="d">自动提醒 · 跟踪依从性</div></div>
-        <div class="side"><div class="branch loop"><span class="bt">确诊结果回流 ↺</span><span class="bd">触发升级/降级，重生成方案；数据反哺规则优化</span></div></div>
+      <div class="diagram-wrap"><svg viewBox="0 0 1100 330" xmlns="http://www.w3.org/2000/svg"><defs><marker id="arr" markerWidth="12" markerHeight="12" refX="9" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#aeefff"/></marker></defs><rect width="1100" height="330" rx="24" fill="#061020"/><text x="36" y="52" fill="#fff" font-size="25" font-weight="800">GPU算力交付链路</text><text x="36" y="80" fill="#9fb0cc" font-size="14">按箭头理解每个模块之间的先后关系，不要把概念孤立记忆。</text><rect x="40.0" y="140" width="153.3" height="88" rx="18" fill="rgba(56,217,255,.12)" stroke="rgba(56,217,255,.38)"/><text x="116.7" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">GPU型号</text><text x="116.7" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">算力基础</text><line x1="193.3" y1="184" x2="209.3" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="213.3" y="140" width="153.3" height="88" rx="18" fill="rgba(170,120,255,.12)" stroke="rgba(170,120,255,.38)"/><text x="290.0" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">显存容量</text><text x="290.0" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">算力基础</text><line x1="366.7" y1="184" x2="382.7" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="386.7" y="140" width="153.3" height="88" rx="18" fill="rgba(75,225,165,.12)" stroke="rgba(75,225,165,.38)"/><text x="463.3" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">服务器配置</text><text x="463.3" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">模型容量</text><line x1="540.0" y1="184" x2="556.0" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="560.0" y="140" width="153.3" height="88" rx="18" fill="rgba(255,180,95,.12)" stroke="rgba(255,180,95,.38)"/><text x="636.7" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">存储网络</text><text x="636.7" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">CPU/内存</text><line x1="713.3" y1="184" x2="729.3" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="733.3" y="140" width="153.3" height="88" rx="18" fill="rgba(255,101,120,.12)" stroke="rgba(255,101,120,.38)"/><text x="810.0" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">资源池</text><text x="810.0" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">数据传输</text><line x1="886.7" y1="184" x2="902.7" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="906.7" y="140" width="153.3" height="88" rx="18" fill="rgba(110,141,255,.12)" stroke="rgba(110,141,255,.38)"/><text x="983.3" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">客户实例</text><text x="983.3" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">统一管理</text><text x="44" y="285" fill="#9fb0cc" font-size="14">这条链路可以作为本模块的最小记忆图。</text></svg></div>
+      <div class="mobile-toc"><details><summary>本模块目录</summary><ol><li><a href="#gpu-resource-1">1. 为什么 AI 更依赖 GPU</a></li><li><a href="#gpu-resource-2">2. GPU 服务器看哪些参数</a></li><li><a href="#gpu-resource-3">3. 显存和模型的关系</a></li><li><a href="#gpu-resource-4">4. 算力资源的交付形态</a></li><li><a href="#gpu-resource-5">5. GPU 租赁客户在买什么</a></li><li><a href="#gpu-resource-6">6. 利用率是经营核心</a></li><li><a href="#gpu-resource-7">7. 资源碎片问题</a></li><li><a href="#gpu-resource-8">8. 采购和方案判断</a></li><li><a href="#gpu-resource-14">14. 常见 GPU 型号参数表</a></li><li><a href="#gpu-resource-15">15. 模型大小怎么估算</a></li><li><a href="#gpu-resource-16">16. 选型口诀</a></li></ol></details></div>
+      <div class="content-grid">
+        <article class="section-card" id="gpu-resource-1"><h3>1. 为什么 AI 更依赖 GPU</h3><p>
+大模型推理和训练涉及大量矩阵计算，GPU 擅长并行计算，所以比 CPU 更适合。对于大模型来说，GPU 不仅提供算力，还提供显存。很多时候不是算力不够，而是显存放不下模型和上下文。</p></article><article class="section-card" id="gpu-resource-2"><h3>2. GPU 服务器看哪些参数</h3><p>
+关键参数包括：GPU 型号、单卡显存、GPU 数量、GPU 间互联、CPU、内存、NVMe 存储、网络带宽、电源功率、散热方式。<br><br>
+入门理解：GPU 是计算核心，显存是模型和上下文的工作空间，网络影响多机训练和数据传输，存储影响模型加载和数据集读写。</p></article><article class="section-card" id="gpu-resource-3"><h3>3. 显存和模型的关系</h3><p>
+模型权重会占显存，KV Cache 会占显存，并发请求会占显存，框架运行也会有额外开销。<br><br>
+模型越大，需要越多显存；上下文越长，KV Cache 越大；并发越高，同时保留的缓存越多。如果显存不足，就会 OOM 或只能降低并发、降低上下文、量化模型或多卡部署。</p></article><article class="section-card" id="gpu-resource-4"><h3>4. 算力资源的交付形态</h3><p>
+裸金属 GPU：客户独占整台服务器，性能强、隔离好。GPU 云主机：像云服务器一样按规格创建实例。容器实例：更轻量，适合任务化和平台化。推理实例：直接给客户模型 API，不暴露底层机器。私有化一体机：硬件、模型、平台一起交付到客户现场。</p></article><article class="section-card" id="gpu-resource-5"><h3>5. GPU 租赁客户在买什么</h3><p>
+训练团队买的是训练时间和多卡性能；AI 应用团队买的是推理吞吐和稳定性；企业客户买的是数据安全和可控；开发者买的是便宜、快速、环境好；科研团队买的是可复现实验环境和算力弹性。</p></article><article class="section-card" id="gpu-resource-6"><h3>6. 利用率是经营核心</h3><p>
+GPU 最大成本不是买的那一刻，而是长期折旧、电费、机柜费、带宽费、运维费。GPU 空着也会产生成本。<br><br>
+所以经营上最重要的是利用率：GPU 被客户实际使用的时间越高，收入越稳定；空置率越高，亏损压力越大。</p></article><article class="section-card" id="gpu-resource-7"><h3>7. 资源碎片问题</h3><p>
+如果客户租 1 张卡、2 张卡、4 张卡、8 张卡，平台会出现不同大小的空闲碎片。某些节点剩余 1 张卡，可能无法满足 4 卡任务；某些任务长期占用但利用率低，会影响整体收益。<br><br>
+这就是为什么后面要学集群调度和资源池。</p></article><article class="section-card" id="gpu-resource-8"><h3>8. 采购和方案判断</h3><p>
+不要只问“买什么 GPU”。应该先问：客户是训练还是推理？模型多大？并发多少？上下文多长？是否需要多机？数据量多大？是否长期使用？预算多少？是否需要私有化？这些问题决定硬件方案。</p></article>
       </div>
-    </div>
-  </section>
+      <div class="note-table"><h4>GPU资源指标</h4><div class="table-scroll"><table><tbody><tr><td>GPU型号</td><td>决定算力、生态和成本</td></tr><tr><td>显存</td><td>决定模型能否放下、上下文能多长</td></tr><tr><td>GPU数量</td><td>决定并发、训练规模和多卡能力</td></tr><tr><td>网络</td><td>影响多机训练和数据传输</td></tr><tr><td>存储</td><td>影响模型加载和数据集读写</td></tr><tr><td>功耗散热</td><td>影响机房电力和制冷要求</td></tr></tbody></table></div></div>
+    
+<div class="supplement">
+  <article class="section-card"><h3>9. 基础补充：显存不是硬盘</h3><p>很多人会把显存和硬盘混淆。硬盘用来长期保存模型文件和数据集，显存是 GPU 运行模型时的高速工作空间。模型文件存在硬盘上不等于模型能跑，必须能加载进显存并留出运行空间。</p></article>
+  <article class="section-card"><h3>10. 为什么同样 8 张 GPU，效果可能不同</h3><p>不仅看 GPU 数量，还要看单卡显存、GPU间互联、服务器架构、网络、存储、散热和软件优化。8 张低显存卡不一定能替代 8 张高显存卡；多卡之间通信慢，也会拖累训练效率。</p></article>
+  <article class="section-card"><h3>11. GPU 云报价为什么差异大</h3><p>差异来自 GPU 型号、显存、是否独享、是否裸金属、带宽、存储、机房位置、是否含技术支持、是否包月、是否有 SLA、资源是否紧缺。看价格时要看总成本，不只是小时单价。</p></article>
+  <article class="section-card"><h3>12. 资源利用率怎么影响商业模式</h3><p>如果平台买了 100 张 GPU，每天只有 30 张被客户使用，那么其余 70 张仍然产生折旧、电费、机柜费和运维费。高利用率能摊薄成本，低利用率会让看似高毛利的业务变成亏损。</p></article>
+  <article class="section-card"><h3>13. 客户选择 GPU 时常见误区</h3><p>误区包括：只看 GPU 型号不看显存；只看小时价格不看稳定性；只看卡数不看互联；只看能不能开机不看环境；只看短期价格不看长期运维；以为训练和推理需要同样配置。</p></article>
+  <div class="note-table"><h4>训练、推理、开发测试的资源差异</h4><div class="table-scroll"><table><tbody><tr><td>开发测试</td><td>更关注便宜、快速启动、镜像好用、Notebook方便。</td></tr><tr><td>推理服务</td><td>更关注稳定、低延迟、显存、并发、SLA和成本。</td></tr><tr><td>微调</td><td>更关注显存、数据读取、训练框架、检查点保存。</td></tr><tr><td>大规模训练</td><td>更关注多卡、多机、高速网络、存储吞吐和容错。</td></tr></tbody></table></div></div>
 
-  <!-- ============ LEGEND ============ -->
-  <div class="legend reveal d5">
-    <div class="leg"><span class="sw build"></span>构建侧（离线一次性）</div>
-    <div class="leg"><span class="sw core"></span>知识图谱 + 引擎</div>
-    <div class="leg"><span class="sw app"></span>应用侧（在线实时）</div>
-  </div>
+  <article class="section-card" id="gpu-resource-14"><h3>14. 常见 GPU 型号、显存、适用场景和可承载模型规模</h3><p>
+下面这张表适合作为 GPU 算力选型的入门速查表。这里说的“能带动多大模型”主要指<b>单卡推理</b>的大致范围，不等于完整训练能力。真实能跑多大，还会受到量化方式、上下文长度、batch size、KV Cache、推理框架、并发数量、模型结构和系统预留显存影响。</p></article>
+  <div class="note-table"><h4>常见 GPU 型号速查表：参数、场景、模型规模</h4><div class="table-scroll"><table><thead><tr><th>GPU 型号</th><th>显存 / 带宽</th><th>常见定位</th><th>适用场景</th><th>大致可承载模型规模（单卡推理）</th></tr></thead><tbody>
+    <tr><td>NVIDIA L4</td><td>24GB GDDR6；约 300GB/s；低功耗 72W</td><td>低功耗推理卡</td><td>Embedding、Rerank、小模型推理、视频编解码、轻量多租户推理</td><td>7B/8B 量化推理较合适；13B/14B 4-bit 可尝试；不适合大模型训练</td></tr>
+    <tr><td>RTX 4090</td><td>24GB GDDR6X；约 1TB/s 级带宽</td><td>消费级高性能卡</td><td>个人开发、模型测试、图像生成、小模型推理、LoRA 实验</td><td>7B/8B FP16 或量化；13B/14B 4-bit/8-bit；32B 4-bit 较紧张</td></tr>
+    <tr><td>RTX 5090</td><td>32GB GDDR7</td><td>新一代消费级高端卡</td><td>本地开发、图像/视频生成、小中型 LLM 推理</td><td>14B 量化较舒适；32B 4-bit 可用；更大模型通常需要多卡或更大显存</td></tr>
+    <tr><td>NVIDIA L40S</td><td>48GB GDDR6 ECC；约 864GB/s</td><td>数据中心通用 AI + 图形卡</td><td>AI 推理、图像/视频生成、渲染、轻量训练、企业视觉工作负载</td><td>32B 4-bit 较舒适；70B 4-bit 勉强/看上下文；13B/14B FP16 较合适</td></tr>
+    <tr><td>RTX 6000 Ada</td><td>48GB GDDR6 ECC；约 960GB/s</td><td>专业工作站卡</td><td>工作站 AI、3D/渲染、数据科学、开发测试、私有小型模型</td><td>类似 L40S：32B 4-bit；13B/14B FP16；70B 4-bit 需要控制上下文和并发</td></tr>
+    <tr><td>RTX PRO 6000 Blackwell</td><td>96GB GDDR7</td><td>新一代专业/服务器卡</td><td>大显存工作站、企业推理、视觉/多模态、较大模型开发</td><td>70B 4-bit 很舒适；32B BF16/FP16 有空间；70B 8-bit 需看 KV Cache 和框架开销</td></tr>
+    <tr><td>NVIDIA A100 40GB / 80GB</td><td>40GB 或 80GB HBM2e；80GB 约 2TB/s</td><td>成熟数据中心训练/推理卡</td><td>训练、微调、推理、科研、企业私有化；生态成熟</td><td>40GB：7B/14B 训练实验或中小模型推理；80GB：32B FP16、70B 4-bit/8-bit 推理</td></tr>
+    <tr><td>NVIDIA H100</td><td>常见 80GB HBM3；带宽约 3.35TB/s；部分形态有 94GB</td><td>Hopper 高端数据中心卡</td><td>大模型训练、高吞吐推理、多卡集群、企业高端算力</td><td>70B 4-bit/8-bit 推理较常见；32B FP16；70B FP16 单卡通常不够稳，需要多卡或更大显存</td></tr>
+    <tr><td>NVIDIA H200</td><td>141GB HBM3e；约 4.8TB/s</td><td>大显存 Hopper 推理/训练卡</td><td>长上下文推理、大模型推理、大 batch、高吞吐服务</td><td>70B 8-bit/4-bit 很舒适；70B BF16/FP16 接近权重下限，需控制上下文；100B+ 量化可考虑</td></tr>
+    <tr><td>NVIDIA B200 / DGX B200 系统</td><td>DGX B200：8卡总 1,440GB HBM3e，约 64TB/s 总带宽；折合单卡约 180GB</td><td>Blackwell 顶级训练/推理平台</td><td>大模型训练、超高吞吐推理、长上下文、多模态、企业 AI 工厂</td><td>单卡 70B BF16/FP16 更有空间；8卡适合更大模型训练/推理；千亿级或 MoE 模型通常依赖多卡/多机</td></tr>
+    <tr><td>AMD MI300X</td><td>192GB HBM3；约 5.3TB/s</td><td>大显存 AI 加速卡</td><td>大模型推理、训练、内存密集型 AI/HPC；适合关注单卡大显存的场景</td><td>70B BF16/FP16 单卡更可行；100B+ 量化推理可考虑；生态需关注 ROCm 适配</td></tr>
+    <tr><td>AMD MI325X</td><td>256GB HBM3E；约 6TB/s</td><td>更大显存 AI 加速卡</td><td>超长上下文、大模型推理、显存敏感任务、多租户大模型服务</td><td>70B BF16/FP16 舒适；100B 级 BF16/FP16 有机会但要看 KV Cache；更大模型多卡更稳</td></tr>
+  </tbody></table></div></div>
+  <article class="section-card" id="gpu-resource-15"><h3>15. 如何估算“这张卡能不能跑这个模型”</h3><p>
+最粗略的估算方法是先看模型权重占多少显存：FP16/BF16 通常约等于“参数量 × 2字节”。所以 7B 模型权重大约 14GB，14B 大约 28GB，32B 大约 64GB，70B 大约 140GB。<br><br>
+但模型运行不是只放权重，还要给 KV Cache、batch、框架、CUDA、通信缓冲等留空间。推理时建议至少预留 20% 到 40% 的显存余量；长上下文和高并发时，余量要更多。<br><br>
+量化可以显著降低显存占用：8-bit 大致接近参数量 × 1字节，4-bit 大致接近参数量 × 0.5字节，再加量化元数据和运行开销。比如 70B 模型 4-bit 可能在 40GB 到 55GB 左右起步，但如果上下文很长、并发很高，80GB 显存也可能很快吃紧。</p></article>
+  <div class="note-table"><h4>模型大小与显存的粗略关系</h4><div class="table-scroll"><table><thead><tr><th>模型规模</th><th>FP16/BF16 权重估算</th><th>8-bit 权重估算</th><th>4-bit 权重估算</th><th>常见理解</th></tr></thead><tbody>
+    <tr><td>7B / 8B</td><td>约 14–16GB</td><td>约 7–8GB+</td><td>约 4–6GB+</td><td>24GB 卡可较好推理；12–16GB 卡跑量化版</td></tr>
+    <tr><td>13B / 14B</td><td>约 26–28GB</td><td>约 13–14GB+</td><td>约 8–12GB+</td><td>24GB 卡适合量化；48GB 卡更舒服</td></tr>
+    <tr><td>32B</td><td>约 64GB</td><td>约 32GB+</td><td>约 18–28GB+</td><td>48GB 卡跑 4-bit 较合适；80GB 卡可考虑更高精度</td></tr>
+    <tr><td>70B</td><td>约 140GB</td><td>约 70GB+</td><td>约 40–55GB+</td><td>80GB 卡常跑 4-bit/8-bit；H200/MI300X 这类大显存卡更适合高精度或长上下文</td></tr>
+    <tr><td>100B+</td><td>200GB 起</td><td>100GB 起</td><td>60GB 起</td><td>通常要大显存卡、多卡或模型并行；不能只看单卡显存</td></tr>
+  </tbody></table></div></div>
+  <article class="section-card" id="gpu-resource-16"><h3>16. GPU 选型口诀</h3><p>
+只做学习和本地实验：看预算和显存，RTX 4090 / 5090 这类消费级卡可以入门，但不适合严肃数据中心托管。<br><br>
+做轻量推理或视频/Embedding：看功耗、成本和密度，L4 这类低功耗卡更适合规模化小模型服务。<br><br>
+做企业中等模型推理、图像生成、开发测试：看 48GB 级别显存，L40S、RTX 6000 Ada 这类更均衡。<br><br>
+做大模型训练、高吞吐推理、私有化大客户：看 H100、H200、B200、MI300X、MI325X 这类数据中心卡，还要看多卡互联、网络、机房电力和推理框架。<br><br>
+最终不要问“哪张卡最好”，而要问：模型多大、精度要求、上下文多长、并发多少、是训练还是推理、是否多租户、预算和 SLA 要求是什么。</p></article>
+  <div class="note-table"><h4>资料来源提示</h4><div class="table-scroll"><table><tbody>
+    <tr><td>NVIDIA 官方</td><td>H100、H200、L4、L40S、RTX 6000 Ada、RTX PRO 6000 Blackwell、DGX B200 等产品资料。</td></tr>
+    <tr><td>AMD 官方</td><td>MI300X、MI325X 产品资料。</td></tr>
+    <tr><td>估算说明</td><td>模型可承载规模为学习和方案判断用的近似范围，不代表生产环境承诺；正式选型应结合模型、框架和压力测试。</td></tr>
+  </tbody></table></div></div>
 
-  <footer class="reveal d5">知识图谱与规则为“弹药”，推理引擎“扣扳机”，LLM 负责理解输入与生成表达 · 决策权在规则</footer>
-
-</div>
+</div></section>
+    <section class="module" id="cluster-cloud" data-module="4">
+      <div class="module-hero">
+        <div class="kicker">Module 04</div>
+        <h2>模块四：集群调度与云平台层</h2>
+        <p class="subtitle">把多台 GPU 服务器组织成可出租、可管理、可计费的资源池。</p>
+        <div class="module-overview">这一模块解决“多台 GPU 服务器怎么变成云平台”的问题。单台机器可以人工管理，多台机器必须资源池化、容器化、自动调度、监控、计费和权限隔离。</div>
+      </div>
+      <div class="diagram-wrap"><svg viewBox="0 0 1100 330" xmlns="http://www.w3.org/2000/svg"><defs><marker id="arr" markerWidth="12" markerHeight="12" refX="9" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#aeefff"/></marker></defs><rect width="1100" height="330" rx="24" fill="#061020"/><text x="36" y="52" fill="#fff" font-size="25" font-weight="800">云平台资源生命周期</text><text x="36" y="80" fill="#9fb0cc" font-size="14">按箭头理解每个模块之间的先后关系，不要把概念孤立记忆。</text><rect x="40.0" y="140" width="153.3" height="88" rx="18" fill="rgba(56,217,255,.12)" stroke="rgba(56,217,255,.38)"/><text x="116.7" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">镜像仓库</text><text x="116.7" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">环境模板</text><line x1="193.3" y1="184" x2="209.3" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="213.3" y="140" width="153.3" height="88" rx="18" fill="rgba(170,120,255,.12)" stroke="rgba(170,120,255,.38)"/><text x="290.0" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">客户下单</text><text x="290.0" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">环境模板</text><line x1="366.7" y1="184" x2="382.7" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="386.7" y="140" width="153.3" height="88" rx="18" fill="rgba(75,225,165,.12)" stroke="rgba(75,225,165,.38)"/><text x="463.3" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">调度器</text><text x="463.3" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">选择规格</text><line x1="540.0" y1="184" x2="556.0" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="560.0" y="140" width="153.3" height="88" rx="18" fill="rgba(255,180,95,.12)" stroke="rgba(255,180,95,.38)"/><text x="636.7" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">GPU节点</text><text x="636.7" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">匹配资源</text><line x1="713.3" y1="184" x2="729.3" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="733.3" y="140" width="153.3" height="88" rx="18" fill="rgba(255,101,120,.12)" stroke="rgba(255,101,120,.38)"/><text x="810.0" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">容器运行</text><text x="810.0" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">分配GPU</text><line x1="886.7" y1="184" x2="902.7" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="906.7" y="140" width="153.3" height="88" rx="18" fill="rgba(110,141,255,.12)" stroke="rgba(110,141,255,.38)"/><text x="983.3" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">监控计费</text><text x="983.3" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">训练推理</text><text x="44" y="285" fill="#9fb0cc" font-size="14">这条链路可以作为本模块的最小记忆图。</text></svg></div>
+      <div class="mobile-toc"><details><summary>本模块目录</summary><ol><li><a href="#cluster-cloud-1">1. 为什么需要集群调度</a></li><li><a href="#cluster-cloud-2">2. Docker 和镜像的作用</a></li><li><a href="#cluster-cloud-3">3. Kubernetes 基础概念</a></li><li><a href="#cluster-cloud-4">4. GPU 调度怎么发生</a></li><li><a href="#cluster-cloud-5">5. 云平台控制台做什么</a></li><li><a href="#cluster-cloud-6">6. 资源生命周期</a></li><li><a href="#cluster-cloud-7">7. 多租户隔离</a></li><li><a href="#cluster-cloud-8">8. 监控和告警</a></li></ol></details></div>
+      <div class="content-grid">
+        <article class="section-card" id="cluster-cloud-1"><h3>1. 为什么需要集群调度</h3><p>
+当只有一台机器，可以手动登录、装环境、启动服务。当有几十台 GPU 服务器时，手工管理会变成灾难：不知道哪台空闲、谁在用、用了多久、故障在哪里、费用怎么算。<br><br>
+集群调度的目标是把分散服务器变成统一资源池，让客户自助创建实例，系统自动分配资源。</p></article><article class="section-card" id="cluster-cloud-2"><h3>2. Docker 和镜像的作用</h3><p>
+Docker 解决环境一致性。AI 环境复杂，可能包含 CUDA、驱动、Python、PyTorch、Transformers、vLLM、Jupyter。镜像把这些环境打包好，客户创建实例时直接选择镜像，不用从零配置。</p></article><article class="section-card" id="cluster-cloud-3"><h3>3. Kubernetes 基础概念</h3><p>
+Cluster 是集群，Node 是节点，Pod 是最小部署单元，Container 是容器，Deployment 管理长期运行服务，Job 管理一次性任务，Service 提供稳定访问入口，Namespace 做逻辑隔离，Scheduler 决定任务放到哪个节点。</p></article><article class="section-card" id="cluster-cloud-4"><h3>4. GPU 调度怎么发生</h3><p>
+客户选择 GPU 规格，平台生成任务描述，调度器查找可用节点，设备插件把 GPU 暴露给 Kubernetes，容器获得 GPU 访问权限，任务开始运行。<br><br>
+调度不只看“有没有 GPU”，还要看 GPU 型号、显存、节点负载、网络、客户等级、任务类型和资源碎片。</p></article><article class="section-card" id="cluster-cloud-5"><h3>5. 云平台控制台做什么</h3><p>
+客户不会直接操作 Kubernetes。客户看到的是控制台：创建实例、选择镜像、选择 GPU、挂载存储、设置网络、查看监控、查看账单、提交工单。<br><br>
+底层复杂度被平台隐藏，客户只需要理解“我选什么配置、用多久、花多少钱、哪里看日志、怎么释放”。</p></article><article class="section-card" id="cluster-cloud-6"><h3>6. 资源生命周期</h3><p>
+下单 → 权限和余额检查 → 资源匹配 → 调度创建 → 拉取镜像 → 绑定 GPU/存储/网络 → 运行监控 → 计量扣费 → 释放回收。<br><br>
+这条生命周期连接了产品、技术、运维、计费和客户体验。</p></article><article class="section-card" id="cluster-cloud-7"><h3>7. 多租户隔离</h3><p>
+云平台通常服务多个客户，所以要隔离账号、项目、容器、网络、存储、日志和账单。常见能力包括企业空间、项目空间、角色权限、Namespace、网络策略、IP 白名单、审计日志和资源配额。</p></article><article class="section-card" id="cluster-cloud-8"><h3>8. 监控和告警</h3><p>
+必须监控 GPU 利用率、显存、温度、CPU、内存、磁盘、网络、容器状态、重启次数、任务排队时间、客户用量和空置率。没有监控，就不知道资源是否健康，也无法做 SLA。</p></article>
+      </div>
+      <div class="note-table"><h4>云平台功能</h4><div class="table-scroll"><table><tbody><tr><td>实例管理</td><td>创建、启动、停止、释放GPU实例</td></tr><tr><td>镜像市场</td><td>提供CUDA、PyTorch、vLLM等环境</td></tr><tr><td>资源调度</td><td>把任务放到合适节点</td></tr><tr><td>监控面板</td><td>展示GPU、显存、网络、日志</td></tr><tr><td>账单中心</td><td>记录时长、规格、存储、流量</td></tr><tr><td>权限隔离</td><td>企业、项目、成员、多租户</td></tr></tbody></table></div></div>
+    
+<div class="supplement">
+  <article class="section-card"><h3>9. 基础补充：资源池是什么</h3><p>资源池就是把很多台服务器抽象成一个统一池子。客户不需要知道具体是哪台机器，只需要选择“我要 1 张 GPU、80GB 显存、PyTorch 镜像、运行 10 小时”，平台自动找到合适节点并启动环境。</p></article>
+  <article class="section-card"><h3>10. 为什么客户不直接用 Kubernetes</h3><p>Kubernetes 是底层编排工具，复杂且偏工程。客户真正需要的是产品化控制台：点选配置、创建实例、查看监控、管理数据盘、看账单、提交工单。平台把复杂底层能力包装成简单界面。</p></article>
+  <article class="section-card"><h3>11. 镜像市场为什么关键</h3><p>AI 环境安装复杂，镜像市场可以提供 CUDA、PyTorch、TensorFlow、vLLM、Jupyter、训练框架等标准环境。镜像越完善，客户启动任务越快，售后问题越少。</p></article>
+  <article class="section-card"><h3>12. 多租户为什么难</h3><p>多个客户共享资源池时，必须隔离账号、网络、存储、容器、日志、账单和权限。任何隔离失败都可能造成数据泄露、越权访问或账单混乱。</p></article>
+  <article class="section-card"><h3>13. 调度策略不是只看空闲</h3><p>调度要考虑 GPU 型号、显存、客户等级、任务优先级、节点健康、镜像缓存、数据位置、网络带宽和资源碎片。好的调度能提高利用率，差的调度会造成资源浪费和客户排队。</p></article>
+  <div class="note-table"><h4>云平台后台发生了什么</h4><div class="table-scroll"><table><tbody><tr><td>客户点击创建</td><td>前端提交规格、镜像、存储、网络、时长。</td></tr><tr><td>订单检查</td><td>检查权限、余额、配额、资源是否可用。</td></tr><tr><td>调度资源</td><td>找到合适节点，绑定 GPU、CPU、内存和存储。</td></tr><tr><td>启动环境</td><td>拉镜像、启动容器、开放端口、初始化服务。</td></tr><tr><td>持续运营</td><td>监控状态、记录用量、扣费、告警、释放资源。</td></tr></tbody></table></div></div>
+</div></section>
+    <section class="module" id="idc-ops" data-module="5">
+      <div class="module-hero">
+        <div class="kicker">Module 05</div>
+        <h2>模块五：IDC 机房、电力、制冷、网络与运维</h2>
+        <p class="subtitle">理解服务器最终放在哪里，怎样稳定运行。</p>
+        <div class="module-overview">这一模块解决“算力资源的物理底座是什么”的问题。GPU 服务器最终要放在机房里，机房提供机柜、电力、制冷、网络、安全和运维。AI 机房不是普通房间，而是高功率、高散热、高网络要求的工程系统。</div>
+      </div>
+      <div class="diagram-wrap"><svg viewBox="0 0 900 460" xmlns="http://www.w3.org/2000/svg"><defs><marker id="arr" markerWidth="12" markerHeight="12" refX="9" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#aeefff"/></marker></defs>
+        <rect width="900" height="460" rx="24" fill="#061020"/>
+        <text x="36" y="52" fill="#fff" font-size="25" font-weight="800">IDC机房物理支撑关系</text>
+        <rect x="350" y="190" width="200" height="80" rx="18" fill="rgba(56,217,255,.14)" stroke="rgba(56,217,255,.45)"/><text x="407" y="238" fill="#fff" font-size="18" font-weight="800">GPU服务器</text>
+        <rect x="70" y="105" width="180" height="70" rx="16" fill="rgba(255,180,95,.13)" stroke="rgba(255,180,95,.4)"/><text x="122" y="147" fill="#fff" font-size="16" font-weight="700">电力系统</text>
+        <rect x="70" y="285" width="180" height="70" rx="16" fill="rgba(56,217,255,.11)" stroke="rgba(56,217,255,.38)"/><text x="122" y="327" fill="#fff" font-size="16" font-weight="700">制冷系统</text>
+        <rect x="360" y="75" width="180" height="70" rx="16" fill="rgba(75,225,165,.12)" stroke="rgba(75,225,165,.38)"/><text x="412" y="117" fill="#fff" font-size="16" font-weight="700">网络系统</text>
+        <rect x="650" y="105" width="180" height="70" rx="16" fill="rgba(170,120,255,.12)" stroke="rgba(170,120,255,.38)"/><text x="704" y="147" fill="#fff" font-size="16" font-weight="700">机柜系统</text>
+        <rect x="650" y="285" width="180" height="70" rx="16" fill="rgba(255,101,120,.11)" stroke="rgba(255,101,120,.35)"/><text x="704" y="327" fill="#fff" font-size="16" font-weight="700">安全运维</text>
+        <line x1="250" y1="140" x2="350" y2="210" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><line x1="250" y1="320" x2="350" y2="250" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><line x1="450" y1="145" x2="450" y2="188" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><line x1="650" y1="140" x2="552" y2="210" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><line x1="650" y1="320" x2="552" y2="250" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/>
+        <text x="44" y="415" fill="#9fb0cc" font-size="14">电力输入能量，制冷带走热量，网络连接客户与集群，机柜承载服务器，安全运维保障稳定。</text>
+        </svg></div>
+      <div class="mobile-toc"><details><summary>本模块目录</summary><ol><li><a href="#idc-ops-1">1. IDC 是什么</a></li><li><a href="#idc-ops-2">2. 机柜和 U 位</a></li><li><a href="#idc-ops-3">3. 电力系统</a></li><li><a href="#idc-ops-4">4. 制冷和液冷</a></li><li><a href="#idc-ops-5">5. 网络系统</a></li><li><a href="#idc-ops-6">6. 消防安防</a></li><li><a href="#idc-ops-7">7. 运维监控</a></li><li><a href="#idc-ops-8">8. AI 高密机房特点</a></li></ol></details></div>
+      <div class="content-grid">
+        <article class="section-card" id="idc-ops-1"><h3>1. IDC 是什么</h3><p>
+IDC 可以理解为专业数据中心，给服务器提供稳定、安全、可扩展的运行环境。它不直接产生模型能力，但决定模型服务能不能长期稳定运行。<br><br>
+客户感受到的是 API 是否稳定、GPU 实例是否可用；机房层面真实发生的是供电、散热、网络、消防、安防和巡检。</p></article><article class="section-card" id="idc-ops-2"><h3>2. 机柜和 U 位</h3><p>
+服务器安装在机柜里。U 位是服务器高度单位。但 AI 服务器不能只看还能放几个 U，更要看单柜功率、承重、走线、散热和网络接入。<br><br>
+AI GPU 服务器通常功耗高、重量大、线缆多，很多时候限制不是空间，而是电力和散热。</p></article><article class="section-card" id="idc-ops-3"><h3>3. 电力系统</h3><p>
+电力是 AI 机房第一约束。核心概念包括市电、UPS、不间断电源、柴油发电机、PDU、电源冗余、双路供电、机柜功率。<br><br>
+学习时要问：每柜多少 kW？是否支持高密 GPU？是否双路供电？UPS 冗余怎样？后续还有多少电力余量？</p></article><article class="section-card" id="idc-ops-4"><h3>4. 制冷和液冷</h3><p>
+服务器消耗的电大多转化为热量。制冷系统负责把热量带走。普通机房常见风冷，高密 AI 机房越来越关注液冷。<br><br>
+散热不足会导致 GPU 降频、故障、宕机、寿命下降。液冷适合高密度、高功率的 AI/HPC 场景。</p></article><article class="section-card" id="idc-ops-5"><h3>5. 网络系统</h3><p>
+网络分外部网络和内部网络。外部网络连接客户，包括公网、BGP、多线、专线、防火墙。内部网络连接服务器、存储和 GPU 集群，影响多机训练、模型加载和日志采集。<br><br>
+普通推理更关注客户访问延迟；大规模训练更关注内部高速网络。</p></article><article class="section-card" id="idc-ops-6"><h3>6. 消防安防</h3><p>
+机房设备价值高、风险高，必须有消防、门禁、监控、访客登记、区域权限、巡检制度。企业客户尤其关心物理访问控制和数据安全边界。</p></article><article class="section-card" id="idc-ops-7"><h3>7. 运维监控</h3><p>
+机房运维监控对象包括电压、电流、PDU负载、UPS状态、温湿度、液冷水温、网络丢包、服务器电源、风扇、磁盘、GPU温度、门禁、水浸、烟感、工单响应时间。<br><br>
+机房故障会一路传导到云平台和客户业务。</p></article><article class="section-card" id="idc-ops-8"><h3>8. AI 高密机房特点</h3><p>
+AI 机房和传统 IDC 的区别在于功率密度更高、散热压力更大、网络要求更强、运维难度更高、回本压力更强。AI 基础设施正在从单台服务器走向整机柜、液冷、高速互联、整体交付。</p></article>
+      </div>
+      <div class="note-table"><h4>机房系统</h4><div class="table-scroll"><table><tbody><tr><td>机柜</td><td>承载服务器，关注U位、承重、功率</td></tr><tr><td>电力</td><td>市电、UPS、PDU、发电机、双路供电</td></tr><tr><td>制冷</td><td>风冷、液冷、冷通道、热通道</td></tr><tr><td>网络</td><td>BGP、专线、交换机、防火墙</td></tr><tr><td>安全</td><td>消防、门禁、视频、巡检</td></tr><tr><td>运维</td><td>监控、告警、备件、SLA响应</td></tr></tbody></table></div></div>
+    
+<div class="supplement">
+  <article class="section-card"><h3>9. 基础补充：为什么机房不能随便找个房间</h3><p>GPU 服务器需要稳定电力、强制冷、高速网络、消防安防、承重机柜和专业运维。普通办公室没有足够电力、散热和安全保障，服务器可能频繁宕机，甚至存在安全风险。</p></article>
+  <article class="section-card"><h3>10. 电力为什么比机柜数量更重要</h3><p>看似还有很多空机柜，但如果电力不够，就不能继续上 GPU 服务器。AI 服务器功耗高，经常是“空间够、电不够、冷不够”。所以问机房资源时要问每柜功率和电力余量。</p></article>
+  <article class="section-card"><h3>11. 液冷为什么越来越重要</h3><p>当单柜功率越来越高，单纯靠空气带走热量会很困难。液冷用液体更高效地带走热量，适合高密度 AI 机柜。但液冷也带来管路、维护、漏液风险和工程复杂度。</p></article>
+  <article class="section-card"><h3>12. 网络不是只有公网带宽</h3><p>公网带宽影响客户访问；内网影响存储、监控和服务调用；高速互联影响多机训练；专线影响企业客户连接；BGP影响多线路访问质量。不同业务对网络关注点不同。</p></article>
+  <article class="section-card"><h3>13. 机房故障如何传导</h3><p>机房电力异常可能导致节点掉线；制冷异常可能导致 GPU 降频或宕机；网络异常可能导致 API 超时；消防安防异常可能影响运维进入现场。最终客户看到的是服务不可用。</p></article>
+  <div class="note-table"><h4>AI机房沟通时要问的问题</h4><div class="table-scroll"><table><tbody><tr><td>电力</td><td>每柜多少 kW？是否双路供电？UPS和发电机如何配置？</td></tr><tr><td>制冷</td><td>风冷还是液冷？支持多高功率密度？温湿度如何监控？</td></tr><tr><td>网络</td><td>BGP、专线、公网带宽、内网带宽、交换机能力如何？</td></tr><tr><td>运维</td><td>是否7×24值守？备件如何？故障响应时间多久？</td></tr><tr><td>合规</td><td>消防、安防、资质、客户审计要求能否满足？</td></tr></tbody></table></div></div>
+</div></section>
+    <section class="module" id="billing-operation" data-module="6">
+      <div class="module-hero">
+        <div class="kicker">Module 06</div>
+        <h2>模块六：计费、运营、交付、SLA 与合规</h2>
+        <p class="subtitle">把技术资源变成可销售、可计费、可交付的服务。</p>
+        <div class="module-overview">这一模块解决“技术系统怎么变成商业服务”的问题。模型、GPU、服务器和机房只是资源；要真正运营，需要账户、权限、计量、计费、账单、发票、SLA、工单、风控、合规和经营看板。</div>
+      </div>
+      <div class="diagram-wrap"><svg viewBox="0 0 1100 330" xmlns="http://www.w3.org/2000/svg"><defs><marker id="arr" markerWidth="12" markerHeight="12" refX="9" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#aeefff"/></marker></defs><rect width="1100" height="330" rx="24" fill="#061020"/><text x="36" y="52" fill="#fff" font-size="25" font-weight="800">运营闭环</text><text x="36" y="80" fill="#9fb0cc" font-size="14">按箭头理解每个模块之间的先后关系，不要把概念孤立记忆。</text><rect x="40.0" y="140" width="128.6" height="88" rx="18" fill="rgba(56,217,255,.12)" stroke="rgba(56,217,255,.38)"/><text x="104.3" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">客户开户</text><text x="104.3" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">企业项目</text><line x1="168.6" y1="184" x2="184.6" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="188.6" y="140" width="128.6" height="88" rx="18" fill="rgba(170,120,255,.12)" stroke="rgba(170,120,255,.38)"/><text x="252.9" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">购买服务</text><text x="252.9" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">企业项目</text><line x1="317.1" y1="184" x2="333.1" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="337.1" y="140" width="128.6" height="88" rx="18" fill="rgba(75,225,165,.12)" stroke="rgba(75,225,165,.38)"/><text x="401.4" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">资源交付</text><text x="401.4" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">API/GPU</text><line x1="465.7" y1="184" x2="481.7" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="485.7" y="140" width="128.6" height="88" rx="18" fill="rgba(255,180,95,.12)" stroke="rgba(255,180,95,.38)"/><text x="550.0" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">持续计量</text><text x="550.0" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">Key/实例</text><line x1="614.3" y1="184" x2="630.3" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="634.3" y="140" width="128.6" height="88" rx="18" fill="rgba(255,101,120,.12)" stroke="rgba(255,101,120,.38)"/><text x="698.6" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">扣费账单</text><text x="698.6" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">用量记录</text><line x1="762.9" y1="184" x2="778.9" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="782.9" y="140" width="128.6" height="88" rx="18" fill="rgba(110,141,255,.12)" stroke="rgba(110,141,255,.38)"/><text x="847.1" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">SLA工单</text><text x="847.1" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">发票对账</text><line x1="911.4" y1="184" x2="927.4" y2="184" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><rect x="931.4" y="140" width="128.6" height="88" rx="18" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.38)"/><text x="995.7" y="176" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">经营看板</text><text x="995.7" y="202" fill="#b9c8df" font-size="12" text-anchor="middle">故障响应</text><text x="44" y="285" fill="#9fb0cc" font-size="14">这条链路可以作为本模块的最小记忆图。</text></svg></div>
+      <div class="mobile-toc"><details><summary>本模块目录</summary><ol><li><a href="#billing-operation-1">1. 运营层的作用</a></li><li><a href="#billing-operation-2">2. 计量系统</a></li><li><a href="#billing-operation-3">3. 计费模型</a></li><li><a href="#billing-operation-4">4. 成本与毛利</a></li><li><a href="#billing-operation-5">5. 账户权限和预算</a></li><li><a href="#billing-operation-6">6. 交付形态</a></li><li><a href="#billing-operation-7">7. SLA 和工单</a></li><li><a href="#billing-operation-8">8. 合规和风控</a></li></ol></details></div>
+      <div class="content-grid">
+        <article class="section-card" id="billing-operation-1"><h3>1. 运营层的作用</h3><p>
+技术层解决能不能用，运营层解决能不能卖、能不能算账、能不能长期服务、出了问题谁负责、客户敢不敢持续使用。<br><br>
+没有运营层，平台会变成内部工具；有运营层，才可能变成商业服务。</p></article><article class="section-card" id="billing-operation-2"><h3>2. 计量系统</h3><p>
+计量是计费前提。AI基础设施的计量对象包括 input token、output token、请求数、GPU数量、GPU时长、实例规格、存储容量、快照、公网流量、带宽峰值、专线、工单服务。<br><br>
+计量要准确、可追溯、可导出，否则客户无法信任账单。</p></article><article class="section-card" id="billing-operation-3"><h3>3. 计费模型</h3><p>
+常见计费方式有按量计费、套餐计费、包月包年、阶梯价、预付费、后付费、项目制、年运维费。<br><br>
+API适合按token或套餐；GPU适合按小时/天/月；私有化适合项目费+年服务费；专属推理实例适合实例费+并发或token费用。</p></article><article class="section-card" id="billing-operation-4"><h3>4. 成本与毛利</h3><p>
+API 成本包括上游模型、输入输出 token、工具调用、检索、重试、日志、审核、客服和运维。GPU 成本包括服务器折旧、GPU折旧、电费、机柜费、带宽费、制冷、运维、备件和空置率。<br><br>
+经营上要看客户收入减去真实成本后的毛利，而不是只看销售收入。</p></article><article class="section-card" id="billing-operation-5"><h3>5. 账户权限和预算</h3><p>
+企业客户需要企业空间、项目空间、部门、成员角色、管理员、开发者、财务、审计、API Key 权限、项目预算、单Key额度、每日消费上限、余额预警、欠费停用。<br><br>
+企业客户买的不只是模型能力，还买可管理性。</p></article><article class="section-card" id="billing-operation-6"><h3>6. 交付形态</h3><p>
+交付可以是公有API、企业API网关、GPU云平台、专属推理服务、私有化部署、一体机或机柜级方案。<br><br>
+交付越重，合同、部署、运维、培训、SLA、合规和售后要求越高。</p></article><article class="section-card" id="billing-operation-7"><h3>7. SLA 和工单</h3><p>
+SLA 是服务等级协议，常涉及可用性、响应时间、恢复时间、故障通知、服务补偿。工单等级通常分 P0/P1/P2/P3，分别对应大面积不可用、核心业务中断、部分功能异常、普通咨询。<br><br>
+SLA 不是一句“我们很稳定”，而是可量化承诺和故障处理机制。</p></article><article class="section-card" id="billing-operation-8"><h3>8. 合规和风控</h3><p>
+合规涉及生成式AI服务、AIGC标识、数据安全、个人信息保护、IDC/云资源业务边界、等保、安全审计、日志留存。风控涉及API Key泄露、盗刷、异常调用、内容安全、GPU滥用、租户隔离。<br><br>
+合规不是最后补丁，而是企业客户采购前就会问的基础问题。</p></article>
+      </div>
+      <div class="note-table"><h4>计费对象</h4><div class="table-scroll"><table><tbody><tr><td>Token</td><td>输入输出和上下文</td></tr><tr><td>请求数</td><td>API调用次数</td></tr><tr><td>GPU时长</td><td>GPU数量乘以运行时间</td></tr><tr><td>存储</td><td>模型、数据、快照、日志</td></tr><tr><td>带宽</td><td>公网流量和专线</td></tr><tr><td>服务</td><td>SLA、运维、私有化支持</td></tr></tbody></table></div></div><div class="note-table"><h4>交付形态</h4><div class="table-scroll"><table><tbody><tr><td>公有API</td><td>轻量调用</td></tr><tr><td>企业网关</td><td>多模型统一管理</td></tr><tr><td>GPU云</td><td>算力租赁</td></tr><tr><td>专属推理</td><td>稳定API服务</td></tr><tr><td>私有化</td><td>本地部署</td></tr><tr><td>一体机</td><td>硬件软件整体交付</td></tr></tbody></table></div></div>
+    
+<div class="supplement">
+  <article class="section-card"><h3>9. 基础补充：为什么运营层很重要</h3><p>没有运营层，客户用了多少说不清，账单算不清，故障责任说不清，成本毛利看不清，合规风险控不住。运营层不是辅助功能，而是 AI 基础设施能不能商业化的核心。</p></article>
+  <article class="section-card"><h3>10. 计费系统要能解释账单</h3><p>客户看到一笔费用后，应该能追溯到具体项目、API Key、模型、时间、输入输出 token、GPU实例、存储、带宽。不能解释的账单会降低客户信任。</p></article>
+  <article class="section-card"><h3>11. SLA 不能随便承诺</h3><p>承诺 99.9% 或 99.99% 之前，要确认底层架构是否支持。单机部署、无备用模型、无故障切换、无监控告警，就不应该承诺很高可用性。SLA 是工程能力和合同责任的结合。</p></article>
+  <article class="section-card"><h3>12. 合规要前置设计</h3><p>如果后期才补合规，可能会影响产品结构。比如日志留存、数据隔离、AIGC标识、模型备案展示、内容审核、权限审计，这些都应该在平台设计阶段预留。</p></article>
+  <article class="section-card"><h3>13. 商业模式要看真实成本</h3><p>API业务要看上游模型成本、失败重试、内容审核和客服成本；GPU业务要看折旧、电费、机柜、带宽和空置率；私有化要看交付人力、现场实施、售后和版本维护。</p></article>
+  <div class="note-table"><h4>客户最常问的运营问题</h4><div class="table-scroll"><table><tbody><tr><td>账单</td><td>能不能按部门、项目、成员、API Key 分摊费用？</td></tr><tr><td>权限</td><td>能不能限制员工调用模型和消费额度？</td></tr><tr><td>安全</td><td>数据会不会被训练？日志能不能脱敏？</td></tr><tr><td>SLA</td><td>服务挂了多久响应？能不能赔付或补偿？</td></tr><tr><td>合规</td><td>有没有备案、等保、审计、AIGC标识能力？</td></tr></tbody></table></div></div>
+</div></section>
+    <section class="module" id="full-review" data-module="7">
+      <div class="module-hero">
+        <div class="kicker">Module 07</div>
+        <h2>模块七：综合架构与学习路线总复盘</h2>
+        <p class="subtitle">把所有模块合成一张完整 AI 基础设施认知图。</p>
+        <div class="module-overview">这一模块不是新增一个孤立知识点，而是把前面所有模块串成一条完整链路：客户需求、模型能力、API调用、推理部署、GPU算力、集群调度、IDC机房、计费运营、安全合规。</div>
+      </div>
+      <div class="diagram-wrap"><svg viewBox="0 0 980 640" xmlns="http://www.w3.org/2000/svg"><defs><marker id="arr" markerWidth="12" markerHeight="12" refX="9" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#aeefff"/></marker></defs>
+    <rect width="980" height="640" rx="24" fill="#061020"/>
+    <text x="38" y="54" fill="#fff" font-size="26" font-weight="800">AI基础设施完整服务链</text>
+    <rect x="80" y="110" width="820" height="54" rx="15" fill="rgba(56,217,255,.13)" stroke="rgba(255,255,255,.18)"/><text x="110" y="144" fill="#fff" font-size="16" font-weight="700">客户与应用层：企业系统、开发者、AI应用、Agent</text><rect x="80" y="188" width="820" height="54" rx="15" fill="rgba(170,120,255,.13)" stroke="rgba(255,255,255,.18)"/><text x="110" y="222" fill="#fff" font-size="16" font-weight="700">API / Token / 聚合平台：鉴权、计量、路由、账单</text><rect x="80" y="266" width="820" height="54" rx="15" fill="rgba(75,225,165,.13)" stroke="rgba(255,255,255,.18)"/><text x="110" y="300" fill="#fff" font-size="16" font-weight="700">模型与推理部署：开源模型、vLLM、量化、KV Cache</text><rect x="80" y="344" width="820" height="54" rx="15" fill="rgba(255,180,95,.13)" stroke="rgba(255,255,255,.18)"/><text x="110" y="378" fill="#fff" font-size="16" font-weight="700">GPU服务器与集群调度：资源池、Docker、Kubernetes</text><rect x="80" y="422" width="820" height="54" rx="15" fill="rgba(255,101,120,.13)" stroke="rgba(255,255,255,.18)"/><text x="110" y="456" fill="#fff" font-size="16" font-weight="700">IDC机房：机柜、电力、制冷、网络、运维</text><rect x="80" y="500" width="820" height="54" rx="15" fill="rgba(255,255,255,.13)" stroke="rgba(255,255,255,.18)"/><text x="110" y="534" fill="#fff" font-size="16" font-weight="700">运营合规：计费、SLA、工单、风控、安全、审计</text><line x1="490" y1="164" x2="490" y2="188" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><line x1="490" y1="242" x2="490" y2="266" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><line x1="490" y1="320" x2="490" y2="344" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><line x1="490" y1="398" x2="490" y2="422" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/><line x1="490" y1="476" x2="490" y2="500" stroke="#aeefff" stroke-width="2" marker-end="url(#arr)"/>
+    <text x="86" y="604" fill="#9fb0cc" font-size="14">从客户需求一路穿透到底层资源，再由运营、SLA和合规保障长期服务。</text></svg></div>
+      <div class="mobile-toc"><details><summary>本模块目录</summary><ol><li><a href="#full-review-1">1. 从整体看 AI 基础设施</a></li><li><a href="#full-review-2">2. 六层架构</a></li><li><a href="#full-review-3">3. 五条核心流</a></li><li><a href="#full-review-4">4. 客户需求判断</a></li><li><a href="#full-review-5">5. 售前诊断问题</a></li><li><a href="#full-review-6">6. 你需要形成的能力</a></li><li><a href="#full-review-7">7. 建议沉淀的学习笔记</a></li><li><a href="#full-review-8">8. 最终记忆</a></li></ol></details></div>
+      <div class="content-grid">
+        <article class="section-card" id="full-review-1"><h3>1. 从整体看 AI 基础设施</h3><p>
+AI基础设施不是模型、GPU、服务器或机房中的某一个点，而是一条完整服务链。客户看到的是API、控制台、账单和SLA；技术团队看到的是模型、推理框架、GPU集群和监控；机房团队看到的是电力、制冷、网络和运维；经营团队看到的是成本、毛利、利用率和续费。</p></article><article class="section-card" id="full-review-2"><h3>2. 六层架构</h3><p>
+第一层：客户与应用层。第二层：API / Token / 聚合平台。第三层：模型与推理部署。第四层：GPU服务器与集群调度。第五层：IDC机房与物理资源。第六层：计费运营、SLA、安全合规。<br><br>
+这六层不是孤立，而是从客户需求一路穿透到底层资源。</p></article><article class="section-card" id="full-review-3"><h3>3. 五条核心流</h3><p>
+能力流：机房 → GPU → 模型 → API → 客户。<br>
+调用流：请求 → 鉴权 → 限流 → 计量 → 路由 → 返回 → 扣费。<br>
+部署流：模型 → 框架 → GPU → 镜像 → 服务 → 网关。<br>
+成本流：电力、机柜、带宽、GPU折旧、API成本、运维 → 客户价格。<br>
+故障流：任何一层故障都会向客户体验传导。</p></article><article class="section-card" id="full-review-4"><h3>4. 客户需求判断</h3><p>
+客户说“我要AI”并不代表同一个需求。可能是买API、做知识库、部署模型、租GPU、做私有化、做企业AI网关。<br><br>
+你要先判断：数据是否敏感？是否需要本地部署？并发多少？预算多少？需要训练还是推理？是否要国产模型？是否要SLA？</p></article><article class="section-card" id="full-review-5"><h3>5. 售前诊断问题</h3><p>
+场景：做问答、客服、知识库、Agent、训练还是推理？<br>
+模型：需要闭源、国产、开源还是自有模型？<br>
+部署：公有API还是私有化？<br>
+数据：是否敏感，是否能出网？<br>
+并发：日调用量、峰值QPS、响应要求？<br>
+成本：按token、按GPU、按项目还是套餐？<br>
+合规：是否涉及备案、AIGC标识、等保、审计？</p></article><article class="section-card" id="full-review-6"><h3>6. 你需要形成的能力</h3><p>
+不是一开始就成为算法工程师、运维工程师或机房专家，而是要具备跨层理解能力：能听懂技术团队说什么，能问对客户需求，能画出整体架构，能看懂成本和毛利，能知道交付风险在哪里。</p></article><article class="section-card" id="full-review-7"><h3>7. 建议沉淀的学习笔记</h3><p>
+建议最终沉淀：AI基础设施总架构图、API调用链路图、Token计费表、模型部署链路图、GPU规格对比表、云平台资源生命周期图、IDC系统组成图、计费模型表、SLA指标表、合规能力清单、客户需求诊断表。</p></article><article class="section-card" id="full-review-8"><h3>8. 最终记忆</h3><p>
+客户要使用AI → 需要模型能力 → 模型通过API提供服务 → API通过token和资源用量计费 → 聚合平台统一管理模型和客户 → 自有模型需要推理部署 → 推理需要GPU服务器 → 多台服务器需要集群调度 → 服务器需要IDC机房承载 → 所有资源都要进入运营、SLA和合规系统。</p></article>
+      </div>
+      <div class="note-table"><h4>客户需求到方案</h4><div class="table-scroll"><table><tbody><tr><td>只要调用模型</td><td>API / Token套餐</td></tr><tr><td>多个业务统一用模型</td><td>聚合平台 / 企业网关</td></tr><tr><td>要部署开源模型</td><td>推理服务 + GPU</td></tr><tr><td>要训练或微调</td><td>GPU云 / 裸金属</td></tr><tr><td>数据不能出内网</td><td>私有化部署</td></tr><tr><td>要长期稳定高并发</td><td>专属推理实例 + SLA</td></tr></tbody></table></div></div>
+    
+<div class="supplement">
+  <article class="section-card"><h3>9. 基础补充：怎么判断自己真的懂了</h3><p>如果你能把客户一句“我们想做AI”拆成：调用模型还是部署模型？公有云还是私有化？买token还是买GPU？训练还是推理？是否要SLA和合规？那说明你的整体框架已经建立。</p></article>
+  <article class="section-card"><h3>10. 以后看项目方案的顺序</h3><p>先看客户场景，再看数据和合规要求，再看模型能力，再看部署方式，再看算力资源，再看计费方式，最后看运维和SLA。不要一上来就讨论买什么GPU或用什么模型。</p></article>
+  <article class="section-card"><h3>11. 你可以形成的核心表达</h3><p>“AI基础设施是把模型能力、算力资源、机房资源、平台软件和运营合规连接起来的服务体系。客户买到的不只是模型，而是可调用、可管理、可计费、可保障、可合规的AI能力。”</p></article>
+  <article class="section-card"><h3>12. 三类典型方案</h3><p>轻量方案：聚合API + Token套餐。中型方案：企业AI网关 + 权限账单 + 多模型路由。重型方案：私有化部署 + GPU集群 + IDC资源 + 运维SLA + 合规交付。</p></article>
+  <article class="section-card"><h3>13. 最重要的学习方法</h3><p>不要孤立背术语。每学一个词，都问三件事：它解决什么问题？它在链路中连接谁和谁？如果它出问题，客户会感受到什么？这样你会更快建立基础设施思维。</p></article>
+  <div class="note-table"><h4>最终一张判断表</h4><div class="table-scroll"><table><tbody><tr><td>客户要快速接入</td><td>优先考虑 API / Token / 聚合平台。</td></tr><tr><td>客户数据敏感</td><td>优先考虑私有化、本地部署、权限和审计。</td></tr><tr><td>客户要训练微调</td><td>优先考虑 GPU、存储、网络和训练环境。</td></tr><tr><td>客户要高并发服务</td><td>优先考虑专属推理实例、负载均衡和SLA。</td></tr><tr><td>客户要长期采购</td><td>优先考虑计费、合同、发票、工单和合规。</td></tr></tbody></table></div></div>
+</div></section>
+<section class="footer-note"><strong>使用建议：</strong>先按 Tab 从模块一看到模块七；遇到图表时横向滑动查看；不要急着背术语，重点理解每一层之间的连接关系。</section>
+</main><a class="backtop" href="#top">回顶部</a>
+<script>
+const tabs=[...document.querySelectorAll('.tab-btn')];
+const modules=[...document.querySelectorAll('.module')];
+function show(id){tabs.forEach(t=>t.classList.toggle('active',t.dataset.target===id));modules.forEach(m=>m.classList.toggle('active',m.id===id));window.scrollTo({top:0,behavior:'smooth'});history.replaceState(null,'','#'+id)}
+tabs.forEach(t=>t.addEventListener('click',()=>show(t.dataset.target)));
+const start=location.hash?.slice(1); if(start&&document.getElementById(start)){tabs.forEach(t=>t.classList.toggle('active',t.dataset.target===start));modules.forEach(m=>m.classList.toggle('active',m.id===start));}else{modules[0].classList.add('active')};
+</script>
+</body></html>
